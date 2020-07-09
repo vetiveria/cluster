@@ -1,10 +1,10 @@
 import io
-import zipfile
 import os
+import urllib.request
+import zipfile
 
 import dask
 import requests
-import urllib.request
 
 import config
 
@@ -18,12 +18,14 @@ class Unload:
 
         self.data_urlstrings = config.data_urlstrings
         self.attributes_urlstring = config.attributes_urlstring
-        self.directory = config.directory
+
+        self.data_path = config.data_path
+        self.attributes_path = config.attributes_path
 
     def attributes(self):
 
         urllib.request.urlretrieve(self.attributes_urlstring,
-                                   os.path.join(self.directory, os.path.basename(self.attributes_urlstring)))
+                                   os.path.join(self.attributes_path, os.path.basename(self.attributes_urlstring)))
 
     @staticmethod
     def read(urlstring: str) -> bytes:
@@ -49,7 +51,7 @@ class Unload:
         """
 
         obj = zipfile.ZipFile(io.BytesIO(self.read(urlstring=urlstring)))
-        obj.extractall(path=self.directory)
+        obj.extractall(path=self.data_path)
 
     def exc(self):
         """
@@ -60,4 +62,5 @@ class Unload:
         self.attributes()
 
         computations = [dask.delayed(self.unzip)(urlstring) for urlstring in self.data_urlstrings]
+        dask.visualize(computations, filename='unload', format='pdf')
         dask.compute(computations, scheduler='processes')
