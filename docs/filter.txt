@@ -1,0 +1,12 @@
+dask
+scikit-learn
+matplotlib
+seaborn
+pytest
+coverage
+pytest-cov
+pylint
+jupyterlab
+numpy
+pandas
+requests

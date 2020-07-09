@@ -1,0 +1,12 @@
+dask[complete]==2.19.0
+scikit-learn==0.23.1
+matplotlib==3.2.2
+seaborn==0.10.1
+pytest==5.4.3
+coverage==5.0
+pytest-cov==2.10.0
+pylint==2.5.3
+jupyterlab==2.1.5
+numpy==1.18.5
+pandas==1.0.5
+requests==2.24.0
