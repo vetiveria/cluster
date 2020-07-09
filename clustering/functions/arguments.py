@@ -6,8 +6,7 @@ import config
 class Arguments:
 
     def __init__(self):
-        self.name = ''
-        self.methods = config.methods
+        self.methods = list(config.algorithms.keys())
 
     def projector(self, method: str):
         if method.upper() not in self.methods:
