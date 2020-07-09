@@ -9,14 +9,15 @@ import dask.dataframe as dd
 import numpy as np
 import pandas as pd
 
+import config
+
 
 class Read:
 
-    def __init__(self, data_, attributes_):
+    def __init__(self):
 
-        self.root = os.getcwd()
-        self.data_ = data_
-        self.attributes_ = attributes_
+        self.data_ = config.data_
+        self.attributes_ = config.attributes_
 
     def attributes(self) -> (np.ndarray, dict):
         """
@@ -58,7 +59,7 @@ class Read:
         except OSError as err:
             raise err
 
-        streams.visualize(filename='streams', format='pdf')
+        streams.visualize(filename='read', format='pdf')
 
         return streams
 
@@ -69,7 +70,7 @@ class Read:
         :return:
         """
 
-        # The data files
+        # The data file paths
         paths = self.paths()
 
         # The attributes of the files
@@ -77,5 +78,7 @@ class Read:
 
         # Hence
         matrices = self.matrices(paths=paths, kwargs=kwargs)
+        matrix = matrices.compute(scheduler='processes')
+        matrix.to_csv(path_or_buf='unscaled.csv', header=True, index=False, encoding='UTF-8')
 
-        return matrices.compute(scheduler='processes')
+        return matrix
