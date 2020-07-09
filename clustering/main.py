@@ -20,10 +20,16 @@ def main():
     unload = clustering.matrix.unload.Unload()
     unload.exc()
 
-    # The unscaled design matrix ... next conditional return of scaled/unscaled
-    # read = clustering.matrix.read.Read(data_=config.data_, attributes_=config.attributes_)
-    # design = read.exc()
-    # design.to_csv(path_or_buf='design.csv', header=True, index=False, encoding='UTF-8')
+    # Design matrices
+    read = clustering.matrix.read.Read()
+    unscaled = read.exc()
+    scale = clustering.matrix.scale.Scale()
+    scaled = scale.exc(data=unscaled, method='robust')
+
+    # Principals
+    interface = clustering.projections.interface.Interface()
+    principals, properties, field = interface.exc(data=scaled, method=args.method)
+    print(principals.head())
 
 
 if __name__ == '__main__':
@@ -32,9 +38,9 @@ if __name__ == '__main__':
     sys.path.append(os.path.join(root, 'clustering'))
 
     # Libraries
-    import config
     import clustering.matrix.unload
     import clustering.matrix.read
+    import clustering.matrix.scale
     import clustering.functions.arguments
     import clustering.functions.directories
     import clustering.projections.interface
