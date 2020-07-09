@@ -5,11 +5,11 @@ import sys
 
 def main():
 
-    # Parse the package's input
+    # Parse the package's input (... use list(config.algorithms.keys()) )
     arguments = clustering.functions.arguments.Arguments()
     parser = argparse.ArgumentParser()
     parser.add_argument('method', type=arguments.projector,
-                        help='The dimensionality reduction method: PCA, KERNEL PCA')
+                        help='The dimensionality reduction method: LINEAR PCA, KERNEL PCA')
     args = parser.parse_args()
 
     # Prepare directories
