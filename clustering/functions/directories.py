@@ -15,7 +15,7 @@ class Directories:
         """
         The constructor
         """
-        self.directory = config.directory
+        self.paths = [config.parent, config.data_path]
 
     def cleanup(self):
         """
@@ -25,7 +25,7 @@ class Directories:
         """
 
         # Foremost, delete files
-        for path in [self.directory]:
+        for path in self.paths:
             files_ = [os.remove(os.path.join(base, file))
                       for base, _, files in os.walk(path) for file in files]
 
@@ -33,7 +33,7 @@ class Directories:
                 raise Exception('Unable to delete all files within path {}'.format(path))
 
         # ... then, directories
-        for path in [self.directory]:
+        for path in self.paths:
             directories_ = [os.removedirs(os.path.join(base, directory))
                             for base, directories, _ in os.walk(path, topdown=False) for directory in directories
                             if os.path.exists(os.path.join(base, directory))]
@@ -41,14 +41,14 @@ class Directories:
             if any(directories_):
                 raise Exception('Unable to delete all directories within path {}'.format(path))
 
-    def paths(self):
+    def create(self):
         """
         Creates directories for (a) archived files, (b) de-archived files
 
         :return: None
         """
 
-        for path in [self.directory]:
+        for path in self.paths:
             if not os.path.exists(path):
                 os.makedirs(path)
 
@@ -59,4 +59,4 @@ class Directories:
         """
 
         self.cleanup()
-        self.paths()
+        self.create()
