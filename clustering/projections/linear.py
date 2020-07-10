@@ -56,7 +56,7 @@ class Linear:
 
         return pd.DataFrame(data=values, columns=fields)
 
-    def exc(self, data: pd.DataFrame, exclude: list, identifiers: list):
+    def exc(self, data: pd.DataFrame, exclude: list, identifiers: list) -> (pd.DataFrame, pd.DataFrame, str):
 
         # The independent variables
         regressors = data.columns.drop(labels=exclude)
