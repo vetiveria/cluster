@@ -22,7 +22,7 @@ class Kernel:
 
         # Decomposition: kernel -> 'rbf', 'cosine'
         algorithm = sklearn.decomposition.KernelPCA(kernel='rbf', eigen_solver='auto',
-                                                    random_state=self.random_state, n_jobs=-1)
+                                                    random_state=self.random_state)
 
         model: sklearn.decomposition.KernelPCA = algorithm.fit(data)
 
