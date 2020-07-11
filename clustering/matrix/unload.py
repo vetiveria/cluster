@@ -64,3 +64,4 @@ class Unload:
         computations = [dask.delayed(self.unzip)(urlstring) for urlstring in self.data_urlstrings]
         dask.visualize(computations, filename='unload', format='pdf')
         dask.compute(computations, scheduler='processes')
+
