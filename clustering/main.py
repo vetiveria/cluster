@@ -1,35 +1,22 @@
-import argparse
 import os
 import sys
 
 
 def main():
-
-    # Parse the package's input (... use list(config.algorithms.keys()) )
-    arguments = clustering.functions.arguments.Arguments()
-    parser = argparse.ArgumentParser()
-    parser.add_argument('method', type=arguments.projector,
-                        help='The dimensionality reduction method: LINEAR PCA, KERNEL PCA')
-    args = parser.parse_args()
-
-    # Prepare directories
-    directories = clustering.functions.directories.Directories()
+    # Ensure the data directories are empty, but exists
     directories.exc()
 
-    # Unload data
-    unload = clustering.matrix.unload.Unload()
+    # Unload data [parallel]
     unload.exc()
 
-    # Design matrices
-    read = clustering.matrix.read.Read()
+    # Read the data, and create a single design matrix [parallel]
     unscaled = read.exc()
-    scale = clustering.matrix.scale.Scale()
-    scaled = scale.exc(data=unscaled, method='robust')
 
-    # Principals
-    interface = clustering.projections.interface.Interface()
-    principals, properties, field = interface.exc(data=scaled, method=args.method)
-    print(principals.head())
+    # Scale the data
+    scale.exc(data=unscaled)
+
+    # Thinking ... calculations tree
+    clustering.calculations.Calculations().exc()
 
 
 if __name__ == '__main__':
@@ -44,5 +31,14 @@ if __name__ == '__main__':
     import clustering.functions.arguments
     import clustering.functions.directories
     import clustering.projections.interface
+    import clustering.calculations
+
+    # Instances
+    arguments = clustering.functions.arguments.Arguments()
+    directories = clustering.functions.directories.Directories()
+    unload = clustering.matrix.unload.Unload()
+    read = clustering.matrix.read.Read()
+    scale = clustering.matrix.scale.Scale()
+    interface = clustering.projections.interface.Interface()
 
     main()
