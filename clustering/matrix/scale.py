@@ -11,6 +11,8 @@ class Scale:
     def __init__(self):
         self.exclude = config.exclude
         self.path_matrix = config.path_matrix
+        self.path_computations = config.path_computations
+        self.scalers = config.scalers
 
     @staticmethod
     def standard(matrix: pd.DataFrame):
@@ -20,7 +22,7 @@ class Scale:
     def robust(matrix: pd.DataFrame):
         return sklearn.preprocessing.RobustScaler().fit_transform(X=matrix)
 
-    def interface(self, data, method):
+    def scaling(self, data, method):
 
         values = data.drop(columns=self.exclude)
 
@@ -36,5 +38,6 @@ class Scale:
 
     def exc(self, data: pd.DataFrame):
 
-        computations = [dask.delayed(self.interface)(data, method) for method in ['standard']]
+        computations = [dask.delayed(self.scaling)(data, method) for method in self.scalers]
+        dask.visualize(computations, filename=os.path.join(self.path_computations, 'scale'), format='pdf')
         dask.compute(computations, scheduler='processes')
