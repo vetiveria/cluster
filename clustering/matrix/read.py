@@ -18,6 +18,7 @@ class Read:
 
         self.data_ = config.data_
         self.attributes_ = config.attributes_
+        self.path_matrix = config.path_matrix
 
     def attributes(self) -> (np.ndarray, dict):
         """
@@ -79,6 +80,7 @@ class Read:
         # Hence
         matrices = self.matrices(paths=paths, kwargs=kwargs)
         matrix = matrices.compute(scheduler='processes')
-        matrix.to_csv(path_or_buf='unscaled.csv', header=True, index=False, encoding='UTF-8')
+        matrix.to_csv(path_or_buf=os.path.join(self.path_matrix, 'unscaled.csv'), header=True, index=False,
+                      encoding='UTF-8')
 
         return matrix
