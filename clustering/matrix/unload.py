@@ -22,6 +22,8 @@ class Unload:
         self.data_path = config.data_path
         self.attributes_path = config.attributes_path
 
+        self.path_computations = config.path_computations
+
     def attributes(self):
 
         urllib.request.urlretrieve(self.attributes_urlstring,
@@ -62,6 +64,5 @@ class Unload:
         self.attributes()
 
         computations = [dask.delayed(self.unzip)(urlstring) for urlstring in self.data_urlstrings]
-        dask.visualize(computations, filename='unload', format='pdf')
+        dask.visualize(computations, filename=os.path.join(self.path_computations, 'unload'), format='pdf')
         dask.compute(computations, scheduler='processes')
-
