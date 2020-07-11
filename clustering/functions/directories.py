@@ -15,7 +15,8 @@ class Directories:
         """
         The constructor
         """
-        self.paths = [config.parent, config.data_path]
+        self.paths = [config.parent, config.data_path, config.warehouse, config.path_matrix,
+                      config.path_principals, config.path_principals_attributes, config.path_clusters]
 
     def cleanup(self):
         """
