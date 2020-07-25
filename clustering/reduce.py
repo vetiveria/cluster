@@ -6,13 +6,15 @@ import dask.dataframe
 import pandas as pd
 
 import clustering.matrix.read
-import clustering.projections.interface
+import clustering.reductions.interface
 import config
 
 
-class Calculations:
+class Reduce:
 
     def __init__(self):
+
+        self.path_computations = config.path_computations
 
         self.path_matrix = config.path_matrix
         self.projection_methods = list(config.algorithms.keys())
@@ -20,10 +22,9 @@ class Calculations:
         read = clustering.matrix.read.Read()
         self.kwargs = read.attributes()
 
-    @staticmethod
-    def filestrings():
+    def filestrings(self):
 
-        return glob.glob(os.path.join(config.path_matrix, '*.csv'))
+        return glob.glob(os.path.join(self.path_matrix, '*.csv'))
 
     def read(self, filestring: str):
 
@@ -44,7 +45,7 @@ class Calculations:
         matrix_type = os.path.splitext(os.path.basename(filestring))[0]
 
         # Apply a dimensionality reduction method
-        projections = clustering.projections.interface.Interface()
+        projections = clustering.reductions.interface.Interface()
         message = projections.exc(matrix=matrix, matrix_type=matrix_type, projection_method=projection_method)
         print(message)
 
@@ -60,5 +61,5 @@ class Calculations:
         computations = [
             dask.delayed(self.dimension_reduction)(combination['filestring'], combination['projection_method'])
             for combination in combinations]
-        dask.visualize(computations, filename='calculations', format='pdf')
+        dask.visualize(computations, filename=os.path.join(self.path_computations, 'reduction'), format='pdf')
         dask.compute(computations, scheduler='processes')
