@@ -1,8 +1,8 @@
 import pandas as pd
 import os
 
-import clustering.projections.kernel
-import clustering.projections.linear
+import clustering.reductions.kernel
+import clustering.reductions.linear
 import config
 
 
@@ -29,8 +29,8 @@ class Interface:
     def project(self, data, projection_method) -> (pd.DataFrame, pd.DataFrame, str):
 
         # Methods
-        linear = clustering.projections.linear.Linear()
-        kernel = clustering.projections.kernel.Kernel()
+        linear = clustering.reductions.linear.Linear()
+        kernel = clustering.reductions.kernel.Kernel()
 
         # Reduction
         principals, properties, field = {
@@ -40,14 +40,12 @@ class Interface:
 
         return principals, properties, field
 
-    def attr(self, fields, filename):
+    def attributes(self, fields, filename):
 
         setup = pd.DataFrame(data={'field': fields})
         condition = setup.field == self.identifier
-        
         setup['type'] = 'float'
         setup.loc[condition, 'type'] = 'str'
-
         setup.to_csv(path_or_buf=os.path.join(self.path_principals_attributes, filename),
                      header=True, index=False, encoding='UTF-8')
 
@@ -56,18 +54,13 @@ class Interface:
         # The principal components, and supplementary materials
         principals, properties, field = self.project(data=matrix, projection_method=projection_method)
 
-        # Saving the principals
+        # Saving the principals, and its reading-in attributes
         if principals is not None:
-
-            filename = '{matrix_type}{projection_method}.csv'.format(matrix_type=matrix_type,
+            filename = '{matrix_type}_{projection_method}.csv'.format(matrix_type=matrix_type,
                                                                      projection_method=projection_method)
             principals.to_csv(path_or_buf=os.path.join(self.path_principals, filename),
                               header=True, index=False, encoding='UTF-8')
-
-            self.attr(principals.columns, filename)
-
+            self.attributes(principals.columns, filename)
             return 'Success: {}, {}'.format(matrix_type, projection_method)
-
         else:
-
             return 'impossible'
