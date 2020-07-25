@@ -18,6 +18,8 @@ class Read:
 
         self.data_ = config.data_
         self.attributes_ = config.attributes_
+        self.path_matrix = config.path_matrix
+        self.path_computations = config.path_computations
 
     def attributes(self) -> (np.ndarray, dict):
         """
@@ -42,8 +44,7 @@ class Read:
 
         return glob.glob(pathname=os.path.join(self.data_, '*.csv'))
 
-    @staticmethod
-    def matrices(paths: list, kwargs: dict) -> dd.DataFrame:
+    def matrices(self, paths: list, kwargs: dict) -> dd.DataFrame:
         """
         Reads-in the files encoded by paths.  Each file is a matrix, together the
         matrices form a single design matrix
@@ -59,7 +60,7 @@ class Read:
         except OSError as err:
             raise err
 
-        streams.visualize(filename='read', format='pdf')
+        streams.visualize(filename=os.path.join(self.path_computations, 'read'), format='pdf')
 
         return streams
 
@@ -79,6 +80,7 @@ class Read:
         # Hence
         matrices = self.matrices(paths=paths, kwargs=kwargs)
         matrix = matrices.compute(scheduler='processes')
-        matrix.to_csv(path_or_buf='unscaled.csv', header=True, index=False, encoding='UTF-8')
+        matrix.to_csv(path_or_buf=os.path.join(self.path_matrix, 'unscaled.csv'), header=True, index=False,
+                      encoding='UTF-8')
 
         return matrix

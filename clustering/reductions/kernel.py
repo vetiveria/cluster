@@ -22,7 +22,7 @@ class Kernel:
 
         # Decomposition: kernel -> 'rbf', 'cosine'
         algorithm = sklearn.decomposition.KernelPCA(kernel='rbf', eigen_solver='auto',
-                                                    random_state=self.random_state, n_jobs=-1)
+                                                    random_state=self.random_state)
 
         model: sklearn.decomposition.KernelPCA = algorithm.fit(data)
 
@@ -35,26 +35,26 @@ class Kernel:
         return transform, eigenstates
 
     @staticmethod
-    def principals(reference: np.ndarray, transform: np.ndarray, limit: int, identifiers: list) -> pd.DataFrame:
+    def principals(reference: np.ndarray, transform: np.ndarray, limit: int, identifier: str) -> pd.DataFrame:
 
         # The critical components
         core = transform[:, :limit].copy()
 
         # Fields
         fields = ['C{:02d}'.format(i) for i in np.arange(1, 1 + limit)]
-        fields = identifiers + fields
+        fields = [identifier] + fields
 
         # values
         values = np.concatenate((reference, core), axis=1)
 
         return pd.DataFrame(data=values, columns=fields)
 
-    def exc(self, data: pd.DataFrame, exclude: list, identifiers: list) -> (pd.DataFrame, pd.DataFrame):
+    def exc(self, data: pd.DataFrame, exclude: list, identifier: str) -> (pd.DataFrame, pd.DataFrame):
         """
 
         :param data:
         :param exclude:
-        :param identifiers:
+        :param identifier:
         :return:
         """
 
@@ -73,7 +73,7 @@ class Kernel:
             principals = None
         else:
             limit = eigenstates.component[index]
-            reference = data[identifiers].values.reshape(data.shape[0], len(identifiers))
-            principals = self.principals(reference=reference, transform=transform, limit=limit, identifiers=identifiers)
+            reference = data[identifier].values.reshape(data.shape[0], 1)
+            principals = self.principals(reference=reference, transform=transform, limit=limit, identifier=identifier)
 
         return principals, properties, field
