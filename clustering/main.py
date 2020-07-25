@@ -15,8 +15,11 @@ def main():
     # Scale the data
     scale.exc(data=unscaled)
 
-    # Thinking ... calculations tree
-    clustering.calculations.Calculations().exc()
+    # Thinking ... dimension reduction
+    clustering.reduce.Reduce().exc()
+
+    # Thinking ... cluster each projection ... kmc, gmm, bgmm
+    clustering.cluster.Cluster().exc()
 
 
 if __name__ == '__main__':
@@ -30,8 +33,9 @@ if __name__ == '__main__':
     import clustering.matrix.scale
     import clustering.functions.arguments
     import clustering.functions.directories
-    import clustering.projections.interface
-    import clustering.calculations
+    import clustering.reductions.interface
+    import clustering.reduce
+    import clustering.cluster
 
     # Instances
     arguments = clustering.functions.arguments.Arguments()
@@ -39,6 +43,6 @@ if __name__ == '__main__':
     unload = clustering.matrix.unload.Unload()
     read = clustering.matrix.read.Read()
     scale = clustering.matrix.scale.Scale()
-    interface = clustering.projections.interface.Interface()
+    interface = clustering.reductions.interface.Interface()
 
     main()
