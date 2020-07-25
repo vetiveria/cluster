@@ -1,4 +1,4 @@
-## clustering
+## Clustering
 A clustering experiment
 
 <br>
