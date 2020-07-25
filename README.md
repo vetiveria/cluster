@@ -1,8 +1,10 @@
-# clustering
+### clustering
 A clustering experiment
 
+<br>
 
-### Packages
+
+#### Preliminaries
 
 Starting with
 
