@@ -1,10 +1,10 @@
-### clustering
+## clustering
 A clustering experiment
 
 <br>
 
 
-#### Preliminaries
+### Preliminaries
 
 Starting with
 
