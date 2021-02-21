@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import sklearn.cluster
 
-import clustering.functions.margin
-import clustering.clusters.measures
+import cluster.functions.margin
+import cluster.clusters.measures
 import config
 
 
@@ -37,7 +37,7 @@ class KMC:
     @staticmethod
     def inertia(models):
 
-        margin = clustering.functions.margin.Margin()
+        margin = cluster.functions.margin.Margin()
 
         # Get the inertia values
         inertia_ = [[i.inertia_, i.n_clusters] for i in models]
@@ -58,7 +58,7 @@ class KMC:
 
     def measurements(self, estimate: sklearn.cluster.KMeans):
 
-        measures = clustering.clusters.measures.Measures(self.principals)
+        measures = cluster.clusters.measures.Measures(self.principals)
         return measures.exc(labels=estimate.labels_, matrix_type=self.matrix_type, model=self.name,
                             marginal=self.marginal)
 

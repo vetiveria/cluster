@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import sklearn.mixture
 
-import clustering.clusters.measures
+import cluster.clusters.measures
 import config
 
 
@@ -57,7 +57,7 @@ class BGMM:
 
     def measurements(self, estimate: sklearn.mixture.BayesianGaussianMixture):
 
-        measures = clustering.clusters.measures.Measures(self.principals)
+        measures = cluster.clusters.measures.Measures(self.principals)
         return measures.exc(labels=estimate.predict(self.matrix), matrix_type=self.matrix_type, model=self.name,
                             marginal=self.marginal, covariance=estimate.covariance_type)
 
