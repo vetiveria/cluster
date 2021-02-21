@@ -4,8 +4,8 @@ import os
 import pandas as pd
 
 import config
-import clustering.clusters.kmc
-import clustering.clusters.bgmm
+import cluster.clusters.kmc
+import cluster.clusters.bgmm
 
 
 class Cluster:
@@ -64,8 +64,8 @@ class Cluster:
 
             # The estimated cluster settings per clustering method requires a parallellel analysis via DASK, hence
             # avoid parallel analysis elsewhere, w.r.t. this section
-            kmc = clustering.clusters.kmc.KMC(principals=principals, matrix_type=matrix_type)
-            bgmm = clustering.clusters.bgmm.BGMM(principals=principals, matrix_type=matrix_type)
+            kmc = cluster.clusters.kmc.KMC(principals=principals, matrix_type=matrix_type)
+            bgmm = cluster.clusters.bgmm.BGMM(principals=principals, matrix_type=matrix_type)
 
             for i in [kmc, bgmm]:
                 estimate, measurements = i.exc()
