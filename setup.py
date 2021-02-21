@@ -1,11 +1,11 @@
 import setuptools
 
 
-NAME = 'clustering'
+NAME = 'cluster'
 VERSION = '0.0.1'
-DESCRIPTION = 'Clustering ...'
+DESCRIPTION = 'Cluster ...'
 AUTHOR = 'greyhypotheses'
-URL = 'https://github.com/discorses/clustering'
+URL = 'https://github.com/vetiveria/cluster'
 PYTHON_REQUIRES = '=3.7.7'
 
 
