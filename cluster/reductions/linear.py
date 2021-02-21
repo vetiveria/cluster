@@ -2,13 +2,13 @@ import numpy as np
 import pandas as pd
 import sklearn.decomposition
 
-import clustering.functions.margin
+import cluster.functions.margin
 
 
 class Linear:
 
     def __init__(self):
-        self.margin = clustering.functions.margin.Margin()
+        self.margin = cluster.functions.margin.Margin()
         self.random_state = 5
 
     @staticmethod

@@ -1,8 +1,8 @@
 import pandas as pd
 import os
 
-import clustering.reductions.kernel
-import clustering.reductions.linear
+import cluster.reductions.kernel
+import cluster.reductions.linear
 import config
 
 
@@ -29,8 +29,8 @@ class Interface:
     def project(self, data, projection_method) -> (pd.DataFrame, pd.DataFrame, str):
 
         # Methods
-        linear = clustering.reductions.linear.Linear()
-        kernel = clustering.reductions.kernel.Kernel()
+        linear = cluster.reductions.linear.Linear()
+        kernel = cluster.reductions.kernel.Kernel()
 
         # Reduction
         principals, properties, field = {
