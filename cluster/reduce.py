@@ -5,8 +5,8 @@ import dask
 import dask.dataframe
 import pandas as pd
 
-import clustering.matrix.read
-import clustering.reductions.interface
+import cluster.matrix.read
+import cluster.reductions.interface
 import config
 
 
@@ -19,7 +19,7 @@ class Reduce:
         self.path_matrix = config.path_matrix
         self.projection_methods = list(config.algorithms.keys())
 
-        read = clustering.matrix.read.Read()
+        read = cluster.matrix.read.Read()
         self.kwargs = read.attributes()
 
     def filestrings(self):
@@ -45,7 +45,7 @@ class Reduce:
         matrix_type = os.path.splitext(os.path.basename(filestring))[0]
 
         # Apply a dimensionality reduction method
-        projections = clustering.reductions.interface.Interface()
+        projections = cluster.reductions.interface.Interface()
         message = projections.exc(matrix=matrix, matrix_type=matrix_type, projection_method=projection_method)
         print(message)
 
