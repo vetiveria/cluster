@@ -1,29 +1,37 @@
+"""
+Module graphs
+
+"""
 import pandas as pd
+
 import matplotlib.pyplot as plt
-
 import seaborn as sns
-
 
 class Graphs:
     """
     Class Graphs
+
     """
 
     def __init__(self):
         """
         The constructor
+
         """
-        self.name = ''
+        
+        sns.set_style("darkgrid")
+        sns.set_context("poster")
+        sns.set(font_scale=0.75)
 
     @staticmethod
-    def scatter(data: pd.DataFrame, x: str, y: str, labels: dict, hue: str = None):
+    def scatter(data: pd.DataFrame, x: str, y: str, labels: dict, hue: str=None):
         """
 
         :param data: A DataFrame
         :param x: The abscissae field
         :param y: The ordinates field
         :param labels: The dictionary of x & y axis labels
-        :param hue: Differentiates by colour
+        :param hue: For differentiating
 
         :return:
         """
