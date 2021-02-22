@@ -1,7 +1,6 @@
 import dask
 import numpy as np
 import pandas as pd
-
 import sklearn.cluster
 
 import cluster.functions.densities
@@ -28,7 +27,6 @@ class Determinants:
         """
 
         :param model:
-
         :return:
         """
 
