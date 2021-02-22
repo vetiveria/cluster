@@ -1,17 +1,21 @@
 import os
 import sys
 
+import logging
+
 
 def main():
 
-    # Unload data [parallel]
-    unload.exc()
+    for key in keys:
 
-    # Read the data, and create a single design matrix [parallel]
-    unscaled = read.exc()
+        # In focus
+        logger.info('\n{}\nModelling the {} projections\n'.format(key, descriptions[key]))
 
-    # Scale the data
-    scale.exc(data=unscaled)
+        # Projection
+        projection = projections.exc(key=key)
+        logger.info('{}\n'.format(projection.frame.head()))
+
+        # The determined models ...
 
 
 if __name__ == '__main__':
@@ -19,13 +23,20 @@ if __name__ == '__main__':
     sys.path.append(root)
     sys.path.append(os.path.join(root, 'clustering'))
 
-    # Libraries
-    import cluster.src.unload
-    import cluster.src.read
-    import cluster.src.scale
+    # Logging
+    logging.basicConfig(level=logging.INFO, format='%(message)s%(asctime)s.%(msecs)03d', datefmt='%Y-%m-%d %H:%M:%S')
+    logger = logging.getLogger(__name__)
 
-    unload = cluster.src.unload.Unload()
-    read = cluster.src.read.Read()
-    scale = cluster.src.scale.Scale()
+    # Libraries
+    import config
+
+    import cluster.src.projections
+
+    # Instances
+    configurations = config.Config()
+    keys = configurations.keys
+    descriptions = configurations.descriptions_()
+
+    projections = cluster.src.projections.Projections()
 
     main()
