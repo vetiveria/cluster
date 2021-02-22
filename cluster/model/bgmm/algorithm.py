@@ -11,11 +11,12 @@ import sklearn.mixture
 
 class Algorithm:
 
-    def __init__(self, parameters: collections.namedtuple):
+    def __init__(self, matrix: np.ndarray, parameters: collections.namedtuple):
 
+        self.matrix = matrix
         self.parameters = parameters
 
-    def modelling(self, matrix: np.ndarray, n_components: int, covariance_type: str,
+    def modelling(self, n_components: int, covariance_type: str,
                   weight_concentration_prior_type: str):
 
         try:
@@ -25,17 +26,17 @@ class Algorithm:
                 weight_concentration_prior=None, mean_precision_prior=None, mean_prior=None,
                 degrees_of_freedom_prior=None, covariance_prior=None, random_state=self.parameters.random_state,
                 warm_start=False, verbose=0, verbose_interval=10
-            ).fit(X=matrix)
+            ).fit(X=self.matrix)
         except OSError as _:
             print('Impossible ... K: {}, Covariance Type: {}'.format(n_components, covariance_type))
             model = None
 
         return model
 
-    def exc(self, matrix: np.ndarray):
+    def exc(self):
 
         computations = [
-            dask.delayed(self.modelling)(matrix, n_components, covariance_type, weight_concentration_prior_type)
+            dask.delayed(self.modelling)(n_components, covariance_type, weight_concentration_prior_type)
             for n_components in self.parameters.array_n_components
             for covariance_type in self.parameters.array_covariance_type
             for weight_concentration_prior_type in self.parameters.array_weight_concentration_prior_type]
