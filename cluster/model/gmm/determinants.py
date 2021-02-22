@@ -2,6 +2,8 @@ import dask
 import numpy as np
 import pandas as pd
 
+import sklearn.mixture
+
 import cluster.functions.densities
 import cluster.functions.measures
 
@@ -22,7 +24,7 @@ class Determinants:
         self.measures = cluster.functions.measures.Measures(matrix=matrix)
 
     @dask.delayed
-    def properties_(self, model):
+    def properties_(self, model: sklearn.mixture.GaussianMixture):
         """
 
         :param model:
@@ -38,12 +40,17 @@ class Determinants:
         return pd.DataFrame(data=values, columns=columns)
 
     @dask.delayed
-    def densities_(self, model):
+    def densities_(self, model: sklearn.mixture.GaussianMixture):
+        """
+
+        :param model:
+        :return:
+        """
 
         return self.densities.exc(model=model)
 
     @dask.delayed
-    def measures_(self, model):
+    def measures_(self, model: sklearn.mixture.GaussianMixture):
         """
 
         :return:
