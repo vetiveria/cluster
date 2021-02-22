@@ -11,13 +11,13 @@ import dask
 
 class Discriminator:
 
-    def __init__(self, frame: pd.DataFrame):
+    def __init__(self, determinants: pd.DataFrame):
         """
 
-        :param frame:
+        :param determinants:
         """
 
-        self.frame = frame
+        self.determinants = determinants
         self.variables = ['calinski', 'davies_transform', 'density']
         self.variables_scaled = ['scaled_' + i for i in self.variables]
 
@@ -43,7 +43,7 @@ class Discriminator:
         :return:
         """
 
-        calculations = [dask.delayed(self.scale_)(self.frame[variable]) for variable in self.variables]
+        calculations = [dask.delayed(self.scale_)(self.determinants[variable]) for variable in self.variables]
         dask.visualize(calculations, filename='scale', format='pdf')
         
         values = dask.compute(calculations, scheduler='processes')[0]
@@ -63,7 +63,7 @@ class Discriminator:
 
     def best(self, blob):
 
-        properties = pd.concat((self.frame, blob), axis=1)
+        properties = pd.concat((self.determinants, blob), axis=1)
         index = properties['score'].idxmax()
         return self.Best(properties=properties, 
                          index=index, 
