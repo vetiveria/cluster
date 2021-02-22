@@ -4,6 +4,8 @@ import pandas as pd
 
 import sklearn.metrics
 
+
+# noinspection PyUnresolvedReferences,PyProtectedMember
 class Measures:
 
     def __init__(self, matrix: np.ndarray):
@@ -29,7 +31,6 @@ class Measures:
         """
 
         return sklearn.metrics.davies_bouldin_score(self.matrix, labels)
-        
 
     def silhouette(self, scores):
         """
@@ -43,8 +44,7 @@ class Measures:
         
         Silhouette = collections.namedtuple(typename='Silhouette', field_names=['mean', 'median'])
         
-        return Silhouette(mean = scores.mean(), median = np.median(scores))
-        
+        return Silhouette._make((scores.mean(), np.median(scores)))
 
     def exc(self, model):
         """
@@ -69,10 +69,3 @@ class Measures:
         summary.loc[:, 'davies_transform'] = np.exp(-summary['davies'])
 
         return summary
-
-
-
-
-
-
-

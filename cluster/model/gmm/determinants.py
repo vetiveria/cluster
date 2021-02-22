@@ -12,7 +12,7 @@ class Determinants:
         """
 
         :param models:
-        :param matrix: The projection array in focus        
+        :param matrix: The projection array in focus
         """
 
         self.models = models
@@ -24,27 +24,28 @@ class Determinants:
     @dask.delayed
     def properties_(self, model):
         """
-        
+
         :param model:
 
         :return:
         """
 
         values = np.array([[model.n_components, np.unique(model.predict(self.matrix)).shape[0],
-                            model.lower_bound_, model.covariance_type, model]])
+                            model.bic(self.matrix), model.covariance_type, model]])
 
-        columns = ['n_components', 'n_clusters', 'likelihood_lower', 'covariance_type', 'model']
+        columns = ['n_components', 'n_clusters', 'bic', 'covariance_type', 'model']
 
         return pd.DataFrame(data=values, columns=columns)
 
     @dask.delayed
     def densities_(self, model):
+
         return self.densities.exc(model=model)
 
     @dask.delayed
     def measures_(self, model):
         """
-        
+
         :return:
         """
 
@@ -52,6 +53,7 @@ class Determinants:
 
     @dask.delayed
     def concatenate(self, measures, densities, properties):
+
         return pd.concat([measures, densities, properties], axis=1)
 
     def exc(self):
@@ -66,4 +68,5 @@ class Determinants:
 
         dask.visualize(calculations, filename='calculations', format='pdf')
         values = dask.compute(calculations, scheduler='processes')[0]
+
         return pd.concat(values, ignore_index=True)

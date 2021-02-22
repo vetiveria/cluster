@@ -24,7 +24,8 @@ class Discriminator:
         self.Best = collections.namedtuple(typename='Best', 
                                            field_names=['properties', 'index', 'estimate', 'discriminant'])
 
-    def scale_(self, series):
+    @staticmethod
+    def scale_(series):
         """
         
         :return:
@@ -79,5 +80,3 @@ class Discriminator:
         features.loc[:, 'score'] = self.score(blob=features)
         
         return self.best(blob=features)
-
-

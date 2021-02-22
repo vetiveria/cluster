@@ -2,10 +2,10 @@
 Module graphs
 
 """
-import pandas as pd
-
 import matplotlib.pyplot as plt
+import pandas as pd
 import seaborn as sns
+
 
 class Graphs:
     """
@@ -18,13 +18,13 @@ class Graphs:
         The constructor
 
         """
-        
+
         sns.set_style("darkgrid")
         sns.set_context("poster")
         sns.set(font_scale=0.75)
 
     @staticmethod
-    def scatter(data: pd.DataFrame, x: str, y: str, labels: dict, hue: str=None):
+    def scatter(data: pd.DataFrame, x: str, y: str, labels: dict, hue: str = None):
         """
 
         :param data: A DataFrame
