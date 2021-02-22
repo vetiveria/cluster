@@ -1,8 +1,8 @@
-import collections
 import pandas as pd
 
 import numpy as np
 import sklearn.metrics
+
 
 class Densities:
 
@@ -34,9 +34,10 @@ class Densities:
 
         return aggregates
 
-    def density(self, series: pd.Series) -> np.float:
+    @staticmethod
+    def density(series) -> np.float:
 
-        condition = series >= 0
+        condition = (series >= 0)
 
         if (np.sum(condition) > 0) & (series[condition].sum() > 0):
             quotient = np.true_divide(series[~condition].sum(), series[condition].sum())
@@ -64,8 +65,3 @@ class Densities:
         summary = pd.DataFrame(data=values, columns=columns)
 
         return summary
-
-
-
-
-
