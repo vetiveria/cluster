@@ -2,6 +2,7 @@ import pandas as pd
 
 import cluster.model.bgmm.interface
 import cluster.model.kmc.interface
+import cluster.model.gmm.interface
 
 
 class Interface:
@@ -13,6 +14,7 @@ class Interface:
 
         self.bgmm = cluster.model.bgmm.interface.Interface()
         self.kmc = cluster.model.kmc.interface.Interface()
+        self.gmm = cluster.model.gmm.interface.Interface()
 
     def exc(self, modelstr: str) -> pd.DataFrame:
         """
@@ -21,9 +23,11 @@ class Interface:
         :return:
         """
 
-        switch = {
-            'bgmm': self.bgmm.exc(),
-            'kmc': self.kmc.exc()
-        }
-
-        return switch.get(modelstr, LookupError("The model '{}' has not been implemented"))
+        if modelstr == 'bgmm':
+            return self.bgmm.exc()
+        elif modelstr == 'kmc':
+            return self.kmc.exc()
+        elif modelstr == 'gmm':
+            return self.gmm.exc()
+        else:
+            raise Exception("The model '{}' has not been implemented".format(modelstr))
