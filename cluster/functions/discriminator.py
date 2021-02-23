@@ -61,7 +61,7 @@ class Discriminator:
 
     def best(self, properties: pd.DataFrame):
         """
-        
+
         :param properties:
         :return:
         """
