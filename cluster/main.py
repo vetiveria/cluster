@@ -12,18 +12,18 @@ def main():
                  "gmm": "Gaussian Mixture Model",
                  "bgmm": "Bayesian Gaussian Mixture Model"}.items():
 
-        if k != "bgmm":
+        if k == "gmm":
             continue
 
         # In focus
         logger.info('{} Modelling\n'.format(v))
 
         # Modelling
-        inbrief: pd.DataFrame = interface.exc(modelstr=k)
-        view = ['n_components', 'n_clusters', 'model', 'scaled_calinski', 'scaled_davies_transform',
+        summary: pd.DataFrame = interface.exc(modelstr=k)
+        view = ['n_components', 'n_clusters', 'scaled_calinski', 'scaled_davies_transform',
                 'scaled_density', 'score', 'key_description']
-        logger.info('\nThe best models of {}\n{}\n'.format(k, inbrief[view]))
-        logger.info(inbrief.info())
+        logger.info('\nThe best models of {}\n{}\n'.format(k, summary[view]))
+        logger.info(summary.info())
 
 
 if __name__ == '__main__':
