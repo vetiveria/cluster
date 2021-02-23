@@ -19,6 +19,8 @@ class Interface:
         :return:
         """
 
-        return {
+        switch = {
             'bgmm': self.bgmm.exc()
-        }.get(modelstr, LookupError("The model '{}' has not been implemented".format(modelstr)))
+        }
+
+        return switch.get(modelstr, LookupError("The model '{}' has not been implemented"))
