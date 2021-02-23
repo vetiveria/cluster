@@ -35,7 +35,7 @@ class Interface:
 
     def exc(self):
 
-        parameters = cluster.model.bgmm.parameters.Parameters()
+        parameters = cluster.model.bgmm.parameters.Parameters().exc()
 
         excerpts = []
         for key in self.keys:
@@ -54,10 +54,15 @@ class Interface:
 
             # The best
             best = self.discriminator.exc(determinants=determinants)
-            self.logger.info(' The best model\n{}\n'.format(best.estimate))
 
-            excerpts.append(best.properties.iloc[best.index, :])
+            vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
+            vector.loc[:, 'key'] = key
+            vector.loc[:, 'key_description'] = self.descriptions[key]
 
+            # Append
+            excerpts.append(vector)
+
+        # Concatenate
         inbrief = pd.concat(excerpts, axis=0, ignore_index=True)
 
         return inbrief
