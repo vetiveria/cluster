@@ -43,7 +43,7 @@ class Interface:
                 continue
 
             # In focus
-            self.logger.info('\n{}\nModelling the {} projections\n'.format(key, self.descriptions[key]))
+            self.logger.info('K Means: Modelling the {} projections\n'.format(self.descriptions[key]))
 
             # Projection
             projection = self.projections.exc(key=key)
