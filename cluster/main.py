@@ -1,21 +1,20 @@
 import os
 import sys
 
+import pandas as pd
+
 import logging
 
 
 def main():
 
-    for key in keys:
+    for k, v in descriptions.items():
 
         # In focus
-        logger.info('\n{}\nModelling the {} projections\n'.format(key, descriptions[key]))
+        logger.info(' {} Modelling\n'.format(v))
 
-        # Projection
-        projection = projections.exc(key=key)
-        logger.info('{}\n'.format(projection.frame.head()))
-
-        # The determined models ...
+        inbrief: pd.DataFrame = interface.exc(modelstr=k)
+        logger.info(' The best models of {}\n{}\n'.format(k, inbrief))
 
 
 if __name__ == '__main__':
@@ -30,13 +29,13 @@ if __name__ == '__main__':
     # Libraries
     import config
 
-    import cluster.src.projections
+    import cluster.model.interface
 
     # Instances
     configurations = config.Config()
     keys = configurations.keys
-    descriptions = configurations.descriptions_()
+    descriptions: dict = configurations.descriptions_()
 
-    projections = cluster.src.projections.Projections()
+    interface = cluster.model.interface.Interface()
 
     main()
