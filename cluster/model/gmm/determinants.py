@@ -9,7 +9,7 @@ import cluster.functions.measures
 
 class Determinants:
 
-    def __init__(self, models: list, matrix: np.ndarray):
+    def __init__(self, matrix: np.ndarray, models: list):
         """
 
         :param models:
