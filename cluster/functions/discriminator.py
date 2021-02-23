@@ -11,13 +11,11 @@ import dask
 
 class Discriminator:
 
-    def __init__(self, determinants: pd.DataFrame):
+    def __init__(self):
         """
 
-        :param determinants:
         """
 
-        self.determinants = determinants
         self.variables = ['calinski', 'davies_transform', 'density']
         self.variables_scaled = ['scaled_' + i for i in self.variables]
 
@@ -37,13 +35,13 @@ class Discriminator:
 
         return scaled    
 
-    def scale(self):
+    def scale(self, determinants: pd.DataFrame):
         """
         
         :return:
         """
 
-        calculations = [dask.delayed(self.scale_)(self.determinants[variable]) for variable in self.variables]
+        calculations = [dask.delayed(self.scale_)(determinants[variable]) for variable in self.variables]
         dask.visualize(calculations, filename='scale', format='pdf')
         
         values = dask.compute(calculations, scheduler='processes')[0]
@@ -61,22 +59,30 @@ class Discriminator:
 
         return scores
 
-    def best(self, blob):
+    def best(self, properties: pd.DataFrame):
+        """
+        
+        :param properties:
+        :return:
+        """
 
-        properties = pd.concat((self.determinants, blob), axis=1)
         index = properties['score'].idxmax()
         return self.Best(properties=properties, 
                          index=index, 
                          estimate=properties.iloc[index, :]['model'], 
                          discriminant='derived score')
 
-    def exc(self):
+    def exc(self, determinants: pd.DataFrame):
         """
         
         :return:
         """
-        
-        features = self.scale()
+
+        # Scale the determinants' variables of interest; the scaled variables are concatenated to determinants
+        features = self.scale(determinants=determinants)
+
+        # Hence, use the scaled variables to calculate each record's score
         features.loc[:, 'score'] = self.score(blob=features)
+        properties = pd.concat((determinants, features), axis=1)
         
-        return self.best(blob=features)
+        return self.best(properties=properties)
