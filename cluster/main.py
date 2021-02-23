@@ -1,21 +1,29 @@
 import os
 import sys
 
+import pandas as pd
+
 import logging
 
 
 def main():
 
-    for key in keys:
+    for k, v in {"kmc": "K Means Clustering",
+                 "gmm": "Gaussian Mixture Model",
+                 "bgmm": "Bayesian Gaussian Mixture Model"}.items():
+
+        if k != "bgmm":
+            continue
 
         # In focus
-        logger.info('\n{}\nModelling the {} projections\n'.format(key, descriptions[key]))
+        logger.info('{} Modelling\n'.format(v))
 
-        # Projection
-        projection = projections.exc(key=key)
-        logger.info('{}\n'.format(projection.frame.head()))
-
-        # The determined models ...
+        # Modelling
+        inbrief: pd.DataFrame = interface.exc(modelstr=k)
+        view = ['n_components', 'n_clusters', 'model', 'scaled_calinski', 'scaled_davies_transform',
+                'scaled_density', 'score', 'key_description']
+        logger.info('\nThe best models of {}\n{}\n'.format(k, inbrief[view]))
+        logger.info(inbrief.info())
 
 
 if __name__ == '__main__':
@@ -30,13 +38,13 @@ if __name__ == '__main__':
     # Libraries
     import config
 
-    import cluster.src.projections
+    import cluster.model.interface
 
     # Instances
     configurations = config.Config()
     keys = configurations.keys
-    descriptions = configurations.descriptions_()
+    descriptions: dict = configurations.descriptions_()
 
-    projections = cluster.src.projections.Projections()
+    interface = cluster.model.interface.Interface()
 
     main()
