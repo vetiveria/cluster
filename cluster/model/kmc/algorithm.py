@@ -11,24 +11,25 @@ import sklearn.mixture
 
 class Algorithm:
 
-    def __init__(self, parameters: collections.namedtuple):
+    def __init__(self, matrix: np.ndarray, parameters: collections.namedtuple):
 
+        self.matrix = matrix
         self.parameters = parameters
 
-    def modelling(self, matrix, n_clusters):
+    def modelling(self, n_clusters):
 
         try:
             model = sklearn.cluster.KMeans(n_clusters=n_clusters, init='k-means++',
-                                           random_state=self.parameters.random_state).fit(X=matrix)
+                                           random_state=self.parameters.random_state).fit(X=self.matrix)
         except OSError as _:
             print('Impossible ...K: {}'.format(n_clusters))
             model = None
 
         return model
 
-    def exc(self, matrix: np.ndarray):
+    def exc(self):
 
-        computations = [dask.delayed(self.modelling)(matrix, n_clusters) for n_clusters in
+        computations = [dask.delayed(self.modelling)(n_clusters) for n_clusters in
                         self.parameters.array_n_clusters]
 
         models = dask.compute(computations, scheduler='processes')[0]
