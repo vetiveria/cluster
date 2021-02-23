@@ -20,7 +20,7 @@ class Algorithm:
 
         try:
             model = sklearn.mixture.GaussianMixture(
-                n_components=n_components, covariance_type=covariance_type, tol=0.001, reg_covar=1e-06, max_iter=100,
+                n_components=n_components, covariance_type=covariance_type, tol=0.001, reg_covar=1e-03, max_iter=100,
                 n_init=100, init_params='kmeans', weights_init=None, means_init=None, precisions_init=None,
                 random_state=self.parameters.random_state, warm_start=False, verbose=0, verbose_interval=10
             ).fit(X=self.matrix)
