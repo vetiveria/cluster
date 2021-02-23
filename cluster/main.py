@@ -8,13 +8,22 @@ import logging
 
 def main():
 
-    for k, v in descriptions.items():
+    for k, v in {"kmc": "K Means Clustering",
+                 "gmm": "Gaussian Mixture Model",
+                 "bgmm": "Bayesian Gaussian Mixture Model"}.items():
+
+        if k != "bgmm":
+            continue
 
         # In focus
-        logger.info(' {} Modelling\n'.format(v))
+        logger.info('{} Modelling\n'.format(v))
 
+        # Modelling
         inbrief: pd.DataFrame = interface.exc(modelstr=k)
-        logger.info(' The best models of {}\n{}\n'.format(k, inbrief))
+        view = ['n_components', 'n_clusters', 'model', 'scaled_calinski', 'scaled_davies_transform',
+                'scaled_density', 'score', 'key_description']
+        logger.info('\nThe best models of {}\n{}\n'.format(k, inbrief[view]))
+        logger.info(inbrief.info())
 
 
 if __name__ == '__main__':
