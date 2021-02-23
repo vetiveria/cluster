@@ -24,7 +24,6 @@ class Interface:
 
         # And, the data projections that will be modelled
         self.projections = cluster.src.projections.Projections()
-
         self.discriminator = cluster.functions.discriminator.Discriminator()
 
         # Logging
@@ -39,6 +38,9 @@ class Interface:
 
         excerpts = []
         for key in self.keys:
+
+            if key == 'cosine':
+                continue
 
             # In focus
             self.logger.info('\n{}\nModelling the {} projections\n'.format(key, self.descriptions[key]))
@@ -63,6 +65,6 @@ class Interface:
             excerpts.append(vector)
 
         # Concatenate
-        inbrief = pd.concat(excerpts, axis=0, ignore_index=True)
+        summary = pd.concat(excerpts, axis=0, ignore_index=True)
 
-        return inbrief
+        return summary
