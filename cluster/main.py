@@ -8,7 +8,7 @@ import logging
 
 def main():
 
-    for k in ['kmc', 'gmm', 'bgmm']:
+    for k in ['kmc', 'gmm', 'bgmm', 'sc']:
 
         if k == 'gmm':
             continue
