@@ -27,8 +27,7 @@ class Interface:
                             datefmt='%Y-%m-%d %H:%M:%S')
         self.logger = logging.getLogger(__name__)
 
-    @staticmethod
-    def determinants() -> pd.DataFrame:
+    def determinants(self) -> pd.DataFrame:
 
         # The modelling parameters
         parameters = cluster.model.sc.parameters.Parameters().exc()
@@ -39,6 +38,7 @@ class Interface:
 
         # The determined models ...
         models: list = cluster.model.sc.algorithm.Algorithm(matrix=design, parameters=parameters).exc()
+        self.logger.info('# of models: {}'.format(len(models)))
 
         return cluster.model.sc.determinants.Determinants(matrix=design, models=models).exc()
 
