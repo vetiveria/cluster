@@ -86,4 +86,5 @@ class Determinants:
 
         dask.visualize(calculations, filename='calculations', format='pdf')
         values = dask.compute(calculations, scheduler='processes')[0]
+
         return pd.concat(values, ignore_index=True)
