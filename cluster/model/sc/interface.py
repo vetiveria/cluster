@@ -37,10 +37,10 @@ class Interface:
         design = cluster.src.design.Design().exc()
 
         # The determined models ...
-        models: list = cluster.model.sc.algorithm.Algorithm(matrix=design, parameters=parameters).exc()
+        models: list = cluster.model.sc.algorithm.Algorithm(matrix=design.tensor, parameters=parameters).exc()
         self.logger.info('# of models: {}'.format(len(models)))
 
-        return cluster.model.sc.determinants.Determinants(matrix=design, models=models).exc()
+        return cluster.model.sc.determinants.Determinants(matrix=design.tensor, models=models).exc()
 
     def exc(self):
         """
