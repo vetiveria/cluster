@@ -13,7 +13,7 @@ class Determinants:
         """
 
         :param models:
-        :param matrix: The projection array in focus
+        :param matrix: The data array in focus
         """
 
         self.models = models
