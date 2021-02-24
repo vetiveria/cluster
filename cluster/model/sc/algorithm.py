@@ -13,7 +13,7 @@ class Algorithm:
 
     def __init__(self, matrix: np.ndarray, parameters: collections.namedtuple):
         """
-        
+
         :param matrix:
         :param parameters:
         """
