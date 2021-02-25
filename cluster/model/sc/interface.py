@@ -3,6 +3,7 @@ import pandas as pd
 import config
 
 import cluster.src.design
+import cluster.src.projections
 
 import cluster.functions.discriminator
 
@@ -21,26 +22,19 @@ class Interface:
         # Configurations
         configurations = config.Config()
 
+        # The keys of the projection matrices, and their descriptions
+        self.keys = configurations.keys
+        self.descriptions = configurations.descriptions_()
+
+        # And, the data projections that will be modelled
+        self.projections = cluster.src.projections.Projections()
+        self.discriminator = cluster.functions.discriminator.Discriminator()
+
         # Logging
         logging.basicConfig(level=logging.INFO,
                             format='%(message)s%(asctime)s.%(msecs)03d',
                             datefmt='%Y-%m-%d %H:%M:%S')
         self.logger = logging.getLogger(__name__)
-
-    def determinants(self) -> pd.DataFrame:
-
-        # The modelling parameters
-        parameters = cluster.model.sc.parameters.Parameters().exc()
-
-        # The design matrix; the spectral clustering model determines the appropriate number of decomposition
-        # principal components w.r.t. a requested number of clusters
-        design = cluster.src.design.Design().exc()
-
-        # The determined models ...
-        models: list = cluster.model.sc.algorithm.Algorithm(matrix=design.tensor, parameters=parameters).exc()
-        self.logger.info('# of models: {}'.format(len(models)))
-
-        return cluster.model.sc.determinants.Determinants(matrix=design.tensor, models=models).exc()
 
     def exc(self):
         """
@@ -48,19 +42,37 @@ class Interface:
         :return:
         """
 
-        # In focus
-        self.logger.info('Spectral Clustering\n')
+        # The modelling parameters
+        parameters = cluster.model.sc.parameters.Parameters().exc()
 
-        # Modelling & Performance Determinants
-        determinants = self.determinants()
+        excerpts = []
+        for key in self.keys:
 
-        # The best
-        best = cluster.functions.discriminator.Discriminator().exc(determinants=determinants)
+            if key == 'cosine':
+                continue
 
-        vector: pd.DataFrame = best.properties.copy().iloc[best.index:(best.index + 1), :]
-        vector.loc[:, 'key'] = best.estimate.eigen_solver
-        vector.loc[:, 'key_description'] = 'A spectral clustering model eigenvalue decomposition method'
+            # In focus
+            self.logger.info('Spectral Clustering: Modelling the {} projections\n'.format(self.descriptions[key]))
 
-        summary = vector.reset_index(drop=True)
+            # Projection
+            projection = self.projections.exc(key=key)
+            self.logger.info('\nTensor Shape: {}\n'.format(projection.tensor.shape))
+
+            # The determined models ...
+            models: list = cluster.model.sc.algorithm.Algorithm(matrix=projection.tensor, parameters=parameters).exc()
+            determinants = cluster.model.sc.determinants.Determinants(matrix=projection.tensor, models=models).exc()
+
+            # The best
+            best = self.discriminator.exc(determinants=determinants)
+
+            vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
+            vector.loc[:, 'key'] = key
+            vector.loc[:, 'key_description'] = self.descriptions[key]
+
+            # Append
+            excerpts.append(vector)
+
+        # Concatenate
+        summary = pd.concat(excerpts, axis=0, ignore_index=True)
 
         return summary
