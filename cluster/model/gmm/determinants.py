@@ -33,7 +33,7 @@ class Determinants:
         values = np.array([[model.n_components, np.unique(model.predict(self.matrix)).shape[0],
                             model.bic(self.matrix), model.covariance_type, model]])
 
-        columns = ['n_components', 'n_clusters', 'bic', 'covariance_type', 'model']
+        columns = ['r_clusters', 'n_clusters', 'bic', 'covariance_type', 'model']
 
         return pd.DataFrame(data=values, columns=columns)
 
