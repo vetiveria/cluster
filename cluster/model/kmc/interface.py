@@ -6,9 +6,9 @@ import cluster.src.projections
 
 import cluster.functions.discriminator
 
-import cluster.model.bgmm.algorithm
-import cluster.model.bgmm.determinants
-import cluster.model.bgmm.parameters
+import cluster.model.kmc.parameters
+import cluster.model.kmc.algorithm
+import cluster.model.kmc.determinants
 
 
 class Interface:
@@ -34,7 +34,7 @@ class Interface:
 
     def exc(self):
 
-        parameters = cluster.model.bgmm.parameters.Parameters().exc()
+        parameters = cluster.model.kmc.parameters.Parameters().exc()
 
         excerpts = []
         for key in self.keys:
@@ -43,15 +43,15 @@ class Interface:
                 continue
 
             # In focus
-            self.logger.info('Bayesian GMM: Modelling the {} projections\n'.format(self.descriptions[key]))
+            self.logger.info('K Means: Modelling the {} projections\n'.format(self.descriptions[key]))
 
             # Projection
             projection = self.projections.exc(key=key)
 
             # The determined models ...
-            models: list = cluster.model.bgmm.algorithm.Algorithm(
+            models: list = cluster.model.kmc.algorithm.Algorithm(
                 matrix=projection.tensor, parameters=parameters).exc()
-            determinants: pd.DataFrame = cluster.model.bgmm.determinants.Determinants(
+            determinants: pd.DataFrame = cluster.model.kmc.determinants.Determinants(
                 matrix=projection.tensor, models=models).exc()
 
             # The best

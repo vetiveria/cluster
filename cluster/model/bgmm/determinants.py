@@ -13,7 +13,7 @@ class Determinants:
         """
 
         :param models:
-        :param matrix: The projection array in focus        
+        :param matrix: The data array in focus
         """
 
         self.models = models
@@ -33,7 +33,7 @@ class Determinants:
         values = np.array([[model.n_components, np.unique(model.predict(self.matrix)).shape[0],
                             model.lower_bound_, model.covariance_type, model]])
 
-        columns = ['n_components', 'n_clusters', 'likelihood_lower', 'covariance_type', 'model']
+        columns = ['r_clusters', 'n_clusters', 'likelihood_lower', 'covariance_type', 'model']
 
         return pd.DataFrame(data=values, columns=columns)
 

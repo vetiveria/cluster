@@ -2,18 +2,22 @@ import logging
 import pandas as pd
 import config
 
+import cluster.src.design
 import cluster.src.projections
 
 import cluster.functions.discriminator
 
-import cluster.model.bgmm.algorithm
-import cluster.model.bgmm.determinants
-import cluster.model.bgmm.parameters
+import cluster.model.sc.algorithm
+import cluster.model.sc.determinants
+import cluster.model.sc.parameters
 
 
 class Interface:
 
     def __init__(self):
+        """
+
+        """
 
         # Configurations
         configurations = config.Config()
@@ -33,8 +37,13 @@ class Interface:
         self.logger = logging.getLogger(__name__)
 
     def exc(self):
+        """
 
-        parameters = cluster.model.bgmm.parameters.Parameters().exc()
+        :return:
+        """
+
+        # The modelling parameters
+        parameters = cluster.model.sc.parameters.Parameters().exc()
 
         excerpts = []
         for key in self.keys:
@@ -43,16 +52,15 @@ class Interface:
                 continue
 
             # In focus
-            self.logger.info('Bayesian GMM: Modelling the {} projections\n'.format(self.descriptions[key]))
+            self.logger.info('Spectral Clustering: Modelling the {} projections\n'.format(self.descriptions[key]))
 
             # Projection
             projection = self.projections.exc(key=key)
+            self.logger.info('\nTensor Shape: {}\n'.format(projection.tensor.shape))
 
             # The determined models ...
-            models: list = cluster.model.bgmm.algorithm.Algorithm(
-                matrix=projection.tensor, parameters=parameters).exc()
-            determinants: pd.DataFrame = cluster.model.bgmm.determinants.Determinants(
-                matrix=projection.tensor, models=models).exc()
+            models: list = cluster.model.sc.algorithm.Algorithm(matrix=projection.tensor, parameters=parameters).exc()
+            determinants = cluster.model.sc.determinants.Determinants(matrix=projection.tensor, models=models).exc()
 
             # The best
             best = self.discriminator.exc(determinants=determinants)

@@ -1,7 +1,7 @@
 import dask
 import numpy as np
 import pandas as pd
-import sklearn.mixture
+import sklearn.cluster
 
 import cluster.functions.densities
 import cluster.functions.measures
@@ -12,8 +12,8 @@ class Determinants:
     def __init__(self, matrix: np.ndarray, models: list):
         """
 
+        :param matrix:
         :param models:
-        :param matrix: The data array in focus
         """
 
         self.models = models
@@ -23,22 +23,22 @@ class Determinants:
         self.measures = cluster.functions.measures.Measures(matrix=matrix)
 
     @dask.delayed
-    def properties_(self, model: sklearn.mixture.GaussianMixture):
+    def properties_(self, model: sklearn.cluster.SpectralClustering):
         """
+        Re-name n_components -> clusters_requested; this will avoid the confusion with # of principal components
 
         :param model:
         :return:
         """
 
-        values = np.array([[model.n_components, np.unique(model.predict(self.matrix)).shape[0],
-                            model.bic(self.matrix), model.covariance_type, model]])
+        values = np.array([model.n_clusters, np.unique(model.fit_predict(self.matrix)).shape[0], model])
 
-        columns = ['r_clusters', 'n_clusters', 'bic', 'covariance_type', 'model']
+        columns = ['r_clusters', 'n_clusters', 'model']
 
         return pd.DataFrame(data=values, columns=columns)
 
     @dask.delayed
-    def densities_(self, model: sklearn.mixture.GaussianMixture):
+    def densities_(self, model: sklearn.cluster.SpectralClustering):
         """
 
         :param model:
@@ -48,9 +48,10 @@ class Determinants:
         return self.densities.exc(model=model)
 
     @dask.delayed
-    def measures_(self, model: sklearn.mixture.GaussianMixture):
+    def measures_(self, model: sklearn.cluster.SpectralClustering):
         """
 
+        :param model:
         :return:
         """
 

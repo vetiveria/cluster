@@ -6,9 +6,9 @@ import cluster.src.projections
 
 import cluster.functions.discriminator
 
-import cluster.model.bgmm.algorithm
-import cluster.model.bgmm.determinants
-import cluster.model.bgmm.parameters
+import cluster.model.gmm.algorithm
+import cluster.model.gmm.determinants
+import cluster.model.gmm.parameters
 
 
 class Interface:
@@ -34,7 +34,7 @@ class Interface:
 
     def exc(self):
 
-        parameters = cluster.model.bgmm.parameters.Parameters().exc()
+        parameters = cluster.model.gmm.parameters.Parameters().exc()
 
         excerpts = []
         for key in self.keys:
@@ -43,15 +43,15 @@ class Interface:
                 continue
 
             # In focus
-            self.logger.info('Bayesian GMM: Modelling the {} projections\n'.format(self.descriptions[key]))
+            self.logger.info('Gaussian Mixture Model: Modelling the {} projections\n'.format(self.descriptions[key]))
 
             # Projection
             projection = self.projections.exc(key=key)
 
             # The determined models ...
-            models: list = cluster.model.bgmm.algorithm.Algorithm(
+            models: list = cluster.model.gmm.algorithm.Algorithm(
                 matrix=projection.tensor, parameters=parameters).exc()
-            determinants: pd.DataFrame = cluster.model.bgmm.determinants.Determinants(
+            determinants: pd.DataFrame = cluster.model.gmm.determinants.Determinants(
                 matrix=projection.tensor, models=models).exc()
 
             # The best

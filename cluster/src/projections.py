@@ -26,8 +26,6 @@ class Projections:
         :return:
         """
 
-        print(self.locators[key])
-
         try:
             data = pd.read_csv(filepath_or_buffer=self.locators[key],
                                header=0, encoding='UTF-8', dtype=self.identifiers)
