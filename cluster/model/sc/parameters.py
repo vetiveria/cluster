@@ -13,10 +13,10 @@ class Parameters:
 
     def exc(self):
         return self.ParametersCollection(
-            array_n_clusters=np.arange(3, 9),
-            array_eigen_solver=np.array(['arpack', 'lobpcg']),
-            array_n_init=np.array([11, 13]),
-            array_gamma=np.arange(start=0.4, stop=1.8, step=0.2),
-            array_affinity=np.array(['polynomial', 'rbf', 'laplacian', 'sigmoid', 'cosine']),
-            array_n_neighbours=np.arange(10, 13),
+            array_n_clusters=np.arange(4, 7),
+            array_eigen_solver=np.array(['lobpcg']),
+            array_n_init=np.arange(start=9, stop=10, step=1),
+            array_gamma=np.arange(start=0.8, stop=1.2, step=0.1),
+            array_affinity=np.array(['nearest_neighbors', 'rbf', 'laplacian']),
+            array_n_neighbours=np.arange(10, 12),
             random_state=5)
