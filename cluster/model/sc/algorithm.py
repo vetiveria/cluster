@@ -33,6 +33,8 @@ class Algorithm:
         :return:
         """
 
+        print(n_clusters, eigen_solver, n_init, gamma, affinity, n_neighbours)
+
         try:
             model = sklearn.cluster.SpectralClustering(n_clusters=n_clusters, eigen_solver=eigen_solver,
                                                        n_components=None,
@@ -40,7 +42,7 @@ class Algorithm:
                                                        gamma=gamma, affinity=affinity, n_neighbors=n_neighbours,
                                                        eigen_tol=0.0, assign_labels='discretize', degree=3, coef0=1,
                                                        kernel_params=None, n_jobs=None).fit(X=self.matrix)
-        except OSError as _:
+        except ValueError as _:
             print('Impossible ... requested clusters: {}, eigenvalue solver: {}'.format(n_clusters, eigen_solver))
             model = None
 
