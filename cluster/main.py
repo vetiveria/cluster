@@ -8,17 +8,14 @@ import logging
 
 def main():
 
-    for k in ['kmc', 'gmm', 'bgmm', 'sc']:
-
-        if k == 'gmm':
-            continue
+    for k in ['kmc', 'bgmm']:
 
         # In focus
         logger.info('\n\n{}\n'.format(k))
 
         # Modelling
         summary: pd.DataFrame = interface.exc(modelstr=k)
-        view = ['n_components', 'n_clusters', 'scaled_calinski', 'scaled_davies_transform',
+        view = ['r_clusters', 'n_clusters', 'scaled_calinski', 'scaled_davies_transform',
                 'scaled_density', 'score', 'key_description']
         logger.info('\nThe best models of {}\n{}\n'.format(k, summary[view]))
 
