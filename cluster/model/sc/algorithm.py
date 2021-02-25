@@ -37,13 +37,14 @@ class Algorithm:
 
         try:
             model = sklearn.cluster.SpectralClustering(n_clusters=n_clusters, eigen_solver=eigen_solver,
-                                                       n_components=None,
+                                                       n_components=self.matrix.shape[1],
                                                        random_state=self.parameters.random_state, n_init=n_init,
                                                        gamma=gamma, affinity=affinity, n_neighbors=n_neighbours,
                                                        eigen_tol=0.0, assign_labels='discretize', degree=3, coef0=1,
                                                        kernel_params=None, n_jobs=None).fit(X=self.matrix)
         except ValueError as _:
-            print('Impossible ... requested clusters: {}, eigenvalue solver: {}'.format(n_clusters, eigen_solver))
+            print('Impossible ... requested clusters: {}, eigenvalue solver: {}, affinity: {}, gamma: {}'.format(
+                n_clusters, eigen_solver, affinity, gamma))
             model = None
 
         return model
