@@ -19,6 +19,9 @@ and
   conda install -c anaconda pytest coverage pytest-cov pylint
   conda install -c anaconda pywin32 jupyterlab nodejs
   conda install -c anaconda python-graphviz
+  
+  # Version 1.3.post1 ... odd
+  pip install yellowbrick 
 ```
 
 Note
