@@ -19,13 +19,13 @@ class Densities:
         :return:
         """
 
+        # labels
         if self.method == 'spectral':
             labels: np.ndarray = model.labels_
         else:
             labels: np.ndarray = model.predict(self.matrix)
 
-        print(labels.shape)
-
+        # scores
         scores: np.ndarray = sklearn.metrics.silhouette_samples(
             self.matrix, labels, metric='cosine')
         
