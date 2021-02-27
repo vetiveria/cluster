@@ -36,7 +36,7 @@ class Algorithm:
         print(n_clusters, eigen_solver, n_init, gamma, affinity, n_neighbours)
 
         try:
-            model = sklearn.cluster.SpectralClustering(n_clusters=n_clusters, eigen_solver=eigen_solver,
+            model = sklearn.cluster.SpectralClustering(n_clusters=n_clusters, eigen_solver=None,
                                                        n_components=self.matrix.shape[1],
                                                        random_state=self.parameters.random_state, n_init=n_init,
                                                        gamma=gamma, affinity=affinity, n_neighbors=n_neighbours,

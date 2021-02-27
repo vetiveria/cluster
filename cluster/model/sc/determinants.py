@@ -19,19 +19,18 @@ class Determinants:
         self.models = models
         self.matrix = matrix
 
-        self.densities = cluster.functions.densities.Densities(matrix=matrix)
-        self.measures = cluster.functions.measures.Measures(matrix=matrix)
+        self.densities = cluster.functions.densities.Densities(matrix=matrix, method='spectral')
+        self.measures = cluster.functions.measures.Measures(matrix=matrix, method='spectral')
 
     @dask.delayed
     def properties_(self, model: sklearn.cluster.SpectralClustering):
         """
-        Re-name n_components -> clusters_requested; this will avoid the confusion with # of principal components
 
         :param model:
         :return:
         """
 
-        values = np.array([model.n_clusters, np.unique(model.fit_predict(self.matrix)).shape[0], model])
+        values = np.array([[model.n_clusters, np.unique(model.fit_predict(self.matrix)).shape[0], model]])
 
         columns = ['r_clusters', 'n_clusters', 'model']
 

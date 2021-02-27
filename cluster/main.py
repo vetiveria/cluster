@@ -8,7 +8,7 @@ import logging
 
 def main():
 
-    for k in ['kmc', 'bgmm']:
+    for k in ['kmc', 'bgmm', 'gmm', 'sc']:
 
         # In focus
         logger.info('\n\n{}\n'.format(k))

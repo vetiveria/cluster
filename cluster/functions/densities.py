@@ -6,13 +6,26 @@ import sklearn.metrics
 
 class Densities:
 
-    def __init__(self, matrix: np.ndarray):
+    def __init__(self, matrix: np.ndarray, method: str = None):
 
-        self.matrix = matrix        
+        self.matrix = matrix
+        self.method = method
     
     def points(self, model) -> pd.DataFrame:
+        """
+        model.labels_ ... spectral clustering, K Means
 
-        labels: np.ndarray = model.predict(self.matrix)
+        :param model:
+        :return:
+        """
+
+        if self.method == 'spectral':
+            labels: np.ndarray = model.labels_
+        else:
+            labels: np.ndarray = model.predict(self.matrix)
+
+        print(labels.shape)
+
         scores: np.ndarray = sklearn.metrics.silhouette_samples(
             self.matrix, labels, metric='cosine')
         
