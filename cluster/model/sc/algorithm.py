@@ -33,7 +33,8 @@ class Algorithm:
         :return:
         """
 
-        print(n_clusters, eigen_solver, n_init, gamma, affinity, n_neighbours)
+        print('# of clusters: {}, # of initialisations: {}, gamma: {}, affinity: {}'.format(n_clusters, n_init, gamma,
+                                                                                            affinity))
 
         try:
             model = sklearn.cluster.SpectralClustering(n_clusters=n_clusters, eigen_solver=None,
