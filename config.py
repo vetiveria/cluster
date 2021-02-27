@@ -11,7 +11,7 @@ class Config:
         """
 
         self.root = os.getcwd()
-        self.keys = ['linear', 'rbf', 'cosine']
+        self.keys = ['rbf', 'cosine']
 
     def descriptions_(self):
         """
@@ -20,7 +20,7 @@ class Config:
         """
 
         Descriptions = collections.namedtuple(typename='Descriptions', field_names=self.keys)
-        descriptions = Descriptions('Linear PCA', 'Radial Basis Function Kernel PCA', 'Cosine Kernel PCA')._asdict()
+        descriptions = Descriptions('Radial Basis Function Kernel PCA', 'Cosine Kernel PCA')._asdict()
 
         return descriptions
 
@@ -35,7 +35,7 @@ class Config:
 
         url = 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/principals/{}/projections.csv'
         URL = collections.namedtuple(typename='URL', field_names=self.keys)
-        locators = URL._make((url.format('linear'), url.format('kernel/rbf'), url.format('kernel/cosine')))._asdict()
+        locators = URL._make((url.format('kernel/rbf'), url.format('kernel/cosine')))._asdict()
 
         return locators, identifiers
 
