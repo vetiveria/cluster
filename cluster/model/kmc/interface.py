@@ -37,10 +37,8 @@ class Interface:
         parameters = cluster.model.kmc.parameters.Parameters().exc()
 
         excerpts = []
+        properties = []
         for key in self.keys:
-
-            if key != 'cosine':
-                continue
 
             # In focus
             self.logger.info('K Means: Modelling the {} projections\n'.format(self.descriptions[key]))
@@ -63,8 +61,14 @@ class Interface:
 
             # Append
             excerpts.append(vector)
+            properties.append(best.properties)
 
         # Concatenate
-        summary = pd.concat(excerpts, axis=0, ignore_index=True)
+        excerpt = pd.concat(excerpts, axis=0, ignore_index=True)
 
-        return summary
+        # Common steps
+        index = excerpt['score'].idxmax()
+        summary = excerpt.iloc[index:(index + 1), :]
+        summary.reset_index(drop=True, inplace=True)
+
+        return summary, properties[index]
