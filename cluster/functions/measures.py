@@ -8,13 +8,14 @@ import sklearn.metrics
 # noinspection PyUnresolvedReferences,PyProtectedMember
 class Measures:
 
-    def __init__(self, matrix: np.ndarray):
+    def __init__(self, matrix: np.ndarray, method: str = None):
         """
         The constructor
         
         """
 
-        self.matrix = matrix    
+        self.matrix = matrix
+        self.method = method
 
     def calinski(self, labels: np.ndarray):
         """
@@ -53,9 +54,13 @@ class Measures:
         """
 
         # Baseline
-        labels: np.ndarray = model.predict(self.matrix)
+        if self.method == 'spectral':
+            labels: np.ndarray = model.labels_
+        else:
+            labels: np.ndarray = model.predict(self.matrix)
+
         scores: np.ndarray = sklearn.metrics.silhouette_samples(
-            self.matrix, model.predict(self.matrix), metric='cosine')
+            self.matrix, labels, metric='cosine')
 
         # Silhouette
         silhouette = self.silhouette(scores=scores)
