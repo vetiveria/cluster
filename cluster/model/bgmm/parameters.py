@@ -15,7 +15,7 @@ class Parameters:
         return self.ParametersCollection(
             array_n_components=np.array([3, 5, 6]),
             array_covariance_type=np.array(['full', 'diag', 'tied', 'spherical']),
-            array_weight_concentration_prior_type=np.array(['dirichlet_process', 'dirichlet_distribution']),
+            array_weight_concentration_prior_type=np.array(['dirichlet_process']),
             array_n_init=np.array([18]),
             metrics=['cityblock', 'cosine', 'euclidean', 'l1', 'l2', 'manhattan'],
             random_state=5)
