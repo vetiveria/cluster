@@ -15,8 +15,8 @@ class Parameters:
         return self.ParametersCollection(
             array_n_clusters=np.array([6]),
             array_eigen_solver=np.array(['arpack', 'lobpcg']),
-            array_n_init=np.arange(start=10, stop=11, step=1),
-            array_gamma=np.arange(start=0.9, stop=1.2, step=0.1),
-            array_affinity=np.array(['rbf', 'laplacian']),
+            array_n_init=np.array([25]),
+            array_gamma=np.array([1.0, 1.1, 1.2, 1.3, 1.4, 1.5]),
+            array_affinity=np.array(['laplacian']),
             array_n_neighbours=np.arange(10, 11),
             random_state=5)
