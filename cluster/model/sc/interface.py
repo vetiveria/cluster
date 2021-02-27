@@ -48,7 +48,7 @@ class Interface:
         excerpts = []
         for key in self.keys:
 
-            if key == 'cosine':
+            if key != 'cosine':
                 continue
 
             # In focus
