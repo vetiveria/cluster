@@ -30,9 +30,9 @@ class Determinants:
         :return:
         """
 
-        values = np.array([[model.n_clusters, np.unique(model.fit_predict(self.matrix)).shape[0], model]])
+        values = np.array([[model.n_clusters, np.unique(model.fit_predict(self.matrix)).shape[0], model.gamma, model]])
 
-        columns = ['r_clusters', 'n_clusters', 'model']
+        columns = ['r_clusters', 'n_clusters', 'gamma', 'model']
 
         return pd.DataFrame(data=values, columns=columns)
 
