@@ -11,6 +11,8 @@ class Config:
         """
 
         self.root = os.getcwd()
+        self.warehouse = os.path.join(self.root, 'warehouse')
+
         self.keys = ['rbf', 'cosine']
 
     def descriptions_(self):
