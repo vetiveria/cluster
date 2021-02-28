@@ -20,7 +20,6 @@ class Prospects:
 
     def labels_(self, matrix):
 
-        # labels
         if self.details.method == 'sc':
             labels: np.ndarray = self.details.model.labels_
         else:
@@ -30,8 +29,19 @@ class Prospects:
 
     def exc(self):
 
+        # Projections
         projections = cluster.src.projections.Projections()
         projection = projections.exc(key=self.details.key)
 
-        print(self.labels_(matrix=projection.tensor))
-        print(projection.frame.info())
+        # The original data set
+        design = cluster.src.design.Design().exc()
+        original: pd.DataFrame = design.frame
+        reduced: pd.DataFrame = projection.frame
+
+        # Adding labels
+        labels = self.labels_(matrix=projection.tensor)
+        original.loc[:, 'label'] = labels
+        reduced.loc[:, 'label'] = labels
+
+        print(original.head().iloc[:, -7:])
+        print(reduced.head())
