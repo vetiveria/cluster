@@ -1,8 +1,12 @@
-import pandas as pd
+import glob
+import os
+
 import numpy as np
+import pandas as pd
 
 import cluster.src.design
 import cluster.src.projections
+import config
 
 
 class Prospects:
@@ -15,8 +19,31 @@ class Prospects:
         :param supplements:
         """
 
+        configurations = config.Config()
+        self.warehouse = configurations.warehouse
+
         self.details = details
         self.supplements = supplements
+
+    def directories(self):
+
+        if os.path.exists(self.warehouse):
+            files = glob.glob(os.path.join(self.warehouse, '*.csv'))
+            [os.remove(file) for file in files]
+
+        if not os.path.exists(self.warehouse):
+            os.makedirs(self.warehouse)
+
+    def write(self, original: pd.DataFrame, reduced: pd.DataFrame):
+
+        self.supplements.to_csv(path_or_buf=os.path.join(self.warehouse, 'supplements.csv'), index=False, header=True,
+                                encoding='UTF-8')
+
+        original.to_csv(path_or_buf=os.path.join(self.warehouse, 'original.csv'), index=False, header=True,
+                        encoding='UTF-8')
+
+        reduced.to_csv(path_or_buf=os.path.join(self.warehouse, 'reduced.csv'), index=False, header=True,
+                       encoding='UTF-8')
 
     def labels_(self, matrix):
 
@@ -43,5 +70,5 @@ class Prospects:
         original.loc[:, 'label'] = labels
         reduced.loc[:, 'label'] = labels
 
-        print(original.head().iloc[:, -7:])
-        print(reduced.head())
+        self.directories()
+        self.write(original=original, reduced=reduced)
