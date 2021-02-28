@@ -32,7 +32,7 @@ class Interface:
                             datefmt='%Y-%m-%d %H:%M:%S')
         self.logger = logging.getLogger(__name__)
 
-    def exc(self):
+    def exc(self, method: str):
 
         parameters = cluster.model.bgmm.parameters.Parameters().exc()
 
@@ -58,6 +58,7 @@ class Interface:
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = key
             vector.loc[:, 'key_description'] = self.descriptions[key]
+            vector.loc[:, 'method'] = method
 
             # Append
             excerpts.append(vector)
@@ -70,6 +71,5 @@ class Interface:
         index = excerpt['score'].idxmax()
         summary: pd.DataFrame = excerpt.iloc[index:(index + 1), :]
         summary.reset_index(drop=True, inplace=True)
-
 
         return summary, properties[index]
