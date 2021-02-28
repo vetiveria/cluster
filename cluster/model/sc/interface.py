@@ -32,7 +32,7 @@ class Interface:
                             datefmt='%Y-%m-%d %H:%M:%S')
         self.logger = logging.getLogger(__name__)
 
-    def exc(self):
+    def exc(self, method: str):
 
         parameters = cluster.model.sc.parameters.Parameters().exc()
 
@@ -50,7 +50,7 @@ class Interface:
             models: list = cluster.model.sc.algorithm.Algorithm(
                 matrix=projection.tensor, parameters=parameters).exc()
             determinants = cluster.model.sc.determinants.Determinants(
-                matrix=projection.tensor, models=models).exc()
+                matrix=projection.tensor, models=models, method=method).exc()
 
             # The best
             best = self.discriminator.exc(determinants=determinants)
@@ -58,6 +58,7 @@ class Interface:
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = key
             vector.loc[:, 'key_description'] = self.descriptions[key]
+            vector.loc[:, 'method'] = method
 
             # Append
             excerpts.append(vector)
