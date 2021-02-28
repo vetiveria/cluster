@@ -8,16 +8,30 @@ import logging
 
 def main():
 
-    for k in ['kmc', 'bgmm', 'gmm', 'sc']:
+    selections = []
+    supplements = []
+    for method in ['kmc', 'gmm', 'bgmm']:
 
         # In focus
-        logger.info('\n\n{}\n'.format(k))
+        logger.info('\n\n{}\n'.format(method))
 
         # Modelling
-        summary: pd.DataFrame = interface.exc(modelstr=k)
-        view = ['r_clusters', 'n_clusters', 'scaled_calinski', 'scaled_davies_transform',
-                'scaled_density', 'score', 'key_description']
-        logger.info('\nThe best models of {}\n{}\n'.format(k, summary[view]))
+        selection, properties = interface.exc(method=method)
+
+        # Combine then select the best, ... save required data
+        selections.append(selection)
+        supplements.append(properties)
+
+    # The best ...
+    frame = pd.concat(selections, axis=0, ignore_index=True)
+    index = frame['score'].idxmax()
+
+    # Hence
+    details: pd.Series = frame.iloc[index, :]
+    details.rename('details')
+    supplements = supplements[index]
+
+    cluster.finale.prospects.Prospects(details=details, supplements=supplements).exc()
 
 
 if __name__ == '__main__':
@@ -33,6 +47,7 @@ if __name__ == '__main__':
     import config
 
     import cluster.model.interface
+    import cluster.finale.prospects
 
     # Instances
     configurations = config.Config()
@@ -40,5 +55,6 @@ if __name__ == '__main__':
     descriptions: dict = configurations.descriptions_()
 
     interface = cluster.model.interface.Interface()
+
 
     main()
