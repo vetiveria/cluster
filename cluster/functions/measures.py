@@ -54,7 +54,7 @@ class Measures:
         """
 
         # Baseline
-        if self.method == 'spectral':
+        if self.method == 'sc':
             labels: np.ndarray = model.labels_
         else:
             labels: np.ndarray = model.predict(self.matrix)

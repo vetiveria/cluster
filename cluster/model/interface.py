@@ -18,22 +18,22 @@ class Interface:
         self.gmm = cluster.model.gmm.interface.Interface()
         self.sc = cluster.model.sc.interface.Interface()
 
-    def exc(self, modelstr: str) -> pd.DataFrame:
+    def exc(self, method: str) -> pd.DataFrame:
         """
 
-        :param modelstr:
+        :param method:
         :return:
         """
 
-        if modelstr == 'bgmm':
-            summary = self.bgmm.exc()
-        elif modelstr == 'kmc':
-            summary = self.kmc.exc()
-        elif modelstr == 'gmm':
-            summary = self.gmm.exc()
-        elif modelstr == 'sc':
-            summary = self.sc.exc()
+        if method == 'bgmm':
+            summary = self.bgmm.exc(method=method)
+        elif method == 'kmc':
+            summary = self.kmc.exc(method=method)
+        elif method == 'gmm':
+            summary = self.gmm.exc(method=method)
+        elif method == 'sc':
+            summary = self.sc.exc(method=method)
         else:
-            raise Exception("The model '{}' has not been implemented".format(modelstr))
+            raise Exception("The method '{}' has not been implemented".format(method))
 
         return summary

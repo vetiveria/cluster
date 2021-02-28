@@ -32,15 +32,13 @@ class Interface:
                             datefmt='%Y-%m-%d %H:%M:%S')
         self.logger = logging.getLogger(__name__)
 
-    def exc(self):
+    def exc(self, method: str):
 
         parameters = cluster.model.gmm.parameters.Parameters().exc()
 
         excerpts = []
+        properties = []
         for key in self.keys:
-
-            if key != 'cosine':
-                continue
 
             # In focus
             self.logger.info('Gaussian Mixture Model: Modelling the {} projections\n'.format(self.descriptions[key]))
@@ -60,11 +58,18 @@ class Interface:
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = key
             vector.loc[:, 'key_description'] = self.descriptions[key]
+            vector.loc[:, 'method'] = method
 
             # Append
             excerpts.append(vector)
+            properties.append(best.properties)
 
         # Concatenate
-        summary = pd.concat(excerpts, axis=0, ignore_index=True)
+        excerpt = pd.concat(excerpts, axis=0, ignore_index=True)
 
-        return summary
+        # Common steps
+        index = excerpt['score'].idxmax()
+        summary = excerpt.iloc[index:(index + 1), :]
+        summary.reset_index(drop=True, inplace=True)
+
+        return summary, properties[index]
