@@ -1,3 +1,4 @@
+import logging
 import os
 
 import numpy as np
@@ -12,23 +13,29 @@ class Prospects:
 
     def __init__(self, details: pd.Series, supplements: pd.DataFrame):
         """
-        view = ['r_clusters', 'n_clusters', 'scaled_calinski', 'scaled_davies_transform',
-            'scaled_density', 'score', 'key_description']
 
         :param supplements:
         """
 
+        # Configurations
         configurations = config.Config()
         self.warehouse = configurations.warehouse
 
+        # Logging
+        logging.basicConfig(level=logging.INFO, format='%(message)s%(asctime)s.%(msecs)03d',
+                            datefmt='%Y-%m-%d %H:%M:%S')
+        self.logger = logging.getLogger(__name__)
+
+        # Calculations
         self.details = details
         self.supplements = supplements
+
+        # Design & Projections Matrices
+        self.design = cluster.src.design.Design().exc()
 
         self.projections = cluster.src.projections.Projections()
         self.projection = self.projections.exc(key=self.details.key)
         self.labels = self.labels_(matrix=self.projection.tensor)
-
-        self.design = cluster.src.design.Design().exc()
 
     def labels_(self, matrix):
 
@@ -60,13 +67,19 @@ class Prospects:
         # Weights:
         # https://github.com/vetiveria/spots/blob/master/src/releases/helpers.py#L52
 
+        print('\n\n')
         principals, original = self.data_()
 
         melted = original.melt(id_vars=['COUNTYGEOID', 'label'], var_name='tri_chem_id', value_name='quantity_kg')
-        print(melted.head())
-        print(melted.info())
-        print(melted[['COUNTYGEOID', 'label']].drop_duplicates().shape)
-        print(melted[['COUNTYGEOID']].drop_duplicates().shape)
+        self.logger.info(melted.info())
+        self.logger.info('\n# of distinct county & label pairs: {}\n'.format(
+            melted[['COUNTYGEOID', 'label']].drop_duplicates().shape))
+        self.logger.info('\n# of distinct counties: {}\n'.format(
+            melted[['COUNTYGEOID']].drop_duplicates().shape))
 
+        releases = melted[melted['quantity_kg'] > 0].copy()
+        self.logger.info(releases.info())
+
+        self.write(blob=releases, name='releases.csv')
         self.write(blob=principals, name='principals.csv')
         self.write(blob=self.supplements, name='supplements.csv')
