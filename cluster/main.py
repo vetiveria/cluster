@@ -1,17 +1,20 @@
+import logging
 import os
 import sys
 
 import pandas as pd
 
-import logging
-
 
 def main():
 
+    # Prepare
+    directories.cleanup()
+    directories.create()
+
+    # Model
     selections = []
     supplements = []
     for method in ['kmc', 'gmm', 'bgmm']:
-
         # In focus
         logger.info('\n\n{}\n'.format(method))
 
@@ -43,18 +46,19 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format='%(message)s%(asctime)s.%(msecs)03d', datefmt='%Y-%m-%d %H:%M:%S')
     logger = logging.getLogger(__name__)
 
-    # Libraries
+    # Configurations
     import config
 
-    import cluster.model.interface
-    import cluster.finale.prospects
-
-    # Instances
     configurations = config.Config()
     keys = configurations.keys
     descriptions: dict = configurations.descriptions_()
 
-    interface = cluster.model.interface.Interface()
+    # Libraries
+    import cluster.model.interface
+    import cluster.finale.prospects
+    import cluster.src.directories
 
+    interface = cluster.model.interface.Interface()
+    directories = cluster.src.directories.Directories()
 
     main()

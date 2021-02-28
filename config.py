@@ -12,6 +12,7 @@ class Config:
 
         self.root = os.getcwd()
         self.warehouse = os.path.join(self.root, 'warehouse')
+        self.directories = [self.warehouse]
 
         self.keys = ['rbf', 'cosine']
 
