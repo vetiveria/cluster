@@ -9,7 +9,7 @@ import cluster.functions.measures
 
 class Determinants:
 
-    def __init__(self, matrix: np.ndarray, models: list):
+    def __init__(self, matrix: np.ndarray, models: list, method: str):
         """
 
         :param matrix:
@@ -18,9 +18,10 @@ class Determinants:
 
         self.models = models
         self.matrix = matrix
+        self.method = method
 
-        self.densities = cluster.functions.densities.Densities(matrix=matrix, method='spectral')
-        self.measures = cluster.functions.measures.Measures(matrix=matrix, method='spectral')
+        self.densities = cluster.functions.densities.Densities(matrix=matrix, method=self.method)
+        self.measures = cluster.functions.measures.Measures(matrix=matrix, method=self.method)
 
     @dask.delayed
     def properties_(self, model: sklearn.cluster.SpectralClustering):
