@@ -1,4 +1,3 @@
-import glob
 import os
 
 import numpy as np
@@ -25,25 +24,11 @@ class Prospects:
         self.details = details
         self.supplements = supplements
 
-    def directories(self):
+        self.projections = cluster.src.projections.Projections()
+        self.projection = self.projections.exc(key=self.details.key)
+        self.labels = self.labels_(matrix=self.projection.tensor)
 
-        if os.path.exists(self.warehouse):
-            files = glob.glob(os.path.join(self.warehouse, '*.csv'))
-            [os.remove(file) for file in files]
-
-        if not os.path.exists(self.warehouse):
-            os.makedirs(self.warehouse)
-
-    def write(self, original: pd.DataFrame, reduced: pd.DataFrame):
-
-        self.supplements.to_csv(path_or_buf=os.path.join(self.warehouse, 'supplements.csv'), index=False, header=True,
-                                encoding='UTF-8')
-
-        original.to_csv(path_or_buf=os.path.join(self.warehouse, 'original.csv'), index=False, header=True,
-                        encoding='UTF-8')
-
-        reduced.to_csv(path_or_buf=os.path.join(self.warehouse, 'reduced.csv'), index=False, header=True,
-                       encoding='UTF-8')
+        self.design = cluster.src.design.Design().exc()
 
     def labels_(self, matrix):
 
@@ -54,21 +39,34 @@ class Prospects:
 
         return labels
 
+    def data_(self) -> (pd.DataFrame, pd.DataFrame):
+
+        # Principals
+        principals: pd.DataFrame = self.projection.frame
+        principals.loc[:, 'label'] = self.labels
+
+        # Original
+        original: pd.DataFrame = self.design.frame
+        original.loc[:, 'label'] = self.labels
+
+        return principals, original
+
+    def write(self, blob: pd.DataFrame, name: str):
+
+        blob.to_csv(path_or_buf=os.path.join(self.warehouse, name), index=False, header=True,
+                    encoding='UTF-8')
+
     def exc(self):
+        # Weights:
+        # https://github.com/vetiveria/spots/blob/master/src/releases/helpers.py#L52
 
-        # Projections
-        projections = cluster.src.projections.Projections()
-        projection = projections.exc(key=self.details.key)
+        principals, original = self.data_()
 
-        # The original data set
-        design = cluster.src.design.Design().exc()
-        original: pd.DataFrame = design.frame
-        reduced: pd.DataFrame = projection.frame
+        melted = original.melt(id_vars=['COUNTYGEOID', 'label'], var_name='tri_chem_id', value_name='quantity_kg')
+        print(melted.head())
+        print(melted.info())
+        print(melted[['COUNTYGEOID', 'label']].drop_duplicates().shape)
+        print(melted[['COUNTYGEOID']].drop_duplicates().shape)
 
-        # Adding labels
-        labels = self.labels_(matrix=projection.tensor)
-        original.loc[:, 'label'] = labels
-        reduced.loc[:, 'label'] = labels
-
-        self.directories()
-        self.write(original=original, reduced=reduced)
+        self.write(blob=principals, name='principals.csv')
+        self.write(blob=self.supplements, name='supplements.csv')
