@@ -13,14 +13,13 @@ class Densities:
     
     def points(self, model) -> pd.DataFrame:
         """
-        model.labels_ ... spectral clustering, K Means
 
         :param model:
         :return:
         """
 
         # labels
-        if self.method == 'spectral':
+        if self.method == 'sc':
             labels: np.ndarray = model.labels_
         else:
             labels: np.ndarray = model.predict(self.matrix)
