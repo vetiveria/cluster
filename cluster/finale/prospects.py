@@ -14,6 +14,7 @@ class Prospects:
     def __init__(self, details: pd.Series, supplements: pd.DataFrame):
         """
 
+        :param details:
         :param supplements:
         """
 
@@ -38,6 +39,11 @@ class Prospects:
         self.labels = self.labels_(matrix=self.projection.tensor)
 
     def labels_(self, matrix):
+        """
+
+        :param matrix: The labels of this matrix will be extracted/determined
+        :return:
+        """
 
         if self.details.method == 'sc':
             labels: np.ndarray = self.details.model.labels_
@@ -47,6 +53,10 @@ class Prospects:
         return labels
 
     def data_(self) -> (pd.DataFrame, pd.DataFrame):
+        """
+
+        :return: The original data set, and its principals w.r.t. a projection in space
+        """
 
         # Principals
         principals: pd.DataFrame = self.projection.frame
@@ -59,18 +69,28 @@ class Prospects:
         return principals, original
 
     def write(self, blob: pd.DataFrame, name: str):
+        """
+
+        :param blob: The DataFrame that will be written to disc
+        :param name: The name of the file, including its extension
+        :return:
+        """
 
         blob.to_csv(path_or_buf=os.path.join(self.warehouse, name), index=False, header=True,
                     encoding='UTF-8')
 
     def exc(self):
-        # Weights:
-        # https://github.com/vetiveria/spots/blob/master/src/releases/helpers.py#L52
+        """
+        Weights: All data value are in kilograms, ref.
+            https://github.com/vetiveria/spots/blob/master/src/releases/helpers.py#L52
 
-        print('\n\n')
+        :return:
+        """
+
         principals, original = self.data_()
 
         melted = original.melt(id_vars=['COUNTYGEOID', 'label'], var_name='tri_chem_id', value_name='quantity_kg')
+        print('\n')
         self.logger.info(melted.info())
         self.logger.info('\n# of distinct county & label pairs: {}\n'.format(
             melted[['COUNTYGEOID', 'label']].drop_duplicates().shape))
@@ -78,6 +98,7 @@ class Prospects:
             melted[['COUNTYGEOID']].drop_duplicates().shape))
 
         releases = melted[melted['quantity_kg'] > 0].copy()
+        print('\n')
         self.logger.info(releases.info())
 
         self.write(blob=releases, name='releases.csv')
