@@ -14,7 +14,7 @@ def main():
     # Model
     selections = []
     supplements = []
-    for method in ['kmc', 'gmm', 'bgmm']:
+    for method in ['kmc', 'bgmm', 'gmm']:
         # In focus
         logger.info('\n\n{}\n'.format(method))
 
