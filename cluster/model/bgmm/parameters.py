@@ -13,7 +13,7 @@ class Parameters:
 
     def exc(self):
         return self.ParametersCollection(
-            array_n_components=np.array([3, 5, 6]),
+            array_n_components=np.array([5, 6]),
             array_covariance_type=np.array(['full', 'diag', 'tied', 'spherical']),
             array_weight_concentration_prior_type=np.array(['dirichlet_process']),
             array_n_init=np.array([18]),
