@@ -1,5 +1,6 @@
 import logging
 import pandas as pd
+import os
 import config
 
 import cluster.src.projections
@@ -17,6 +18,7 @@ class Interface:
 
         # Configurations
         configurations = config.Config()
+        self.warehouse = configurations.warehouse
 
         # The keys of the projection matrices, and their descriptions
         self.keys = configurations.keys
@@ -66,6 +68,8 @@ class Interface:
 
         # Concatenate
         excerpt = pd.concat(excerpts, axis=0, ignore_index=True)
+        excerpt.to_csv(path_or_buf=os.path.join(self.warehouse, method + '.csv'),
+                       index=False, header=True, encoding='utf-8')
 
         # Common steps
         index = excerpt['score'].idxmax()
