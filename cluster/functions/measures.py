@@ -68,7 +68,7 @@ class Measures:
         # In summary
         values = np.array([[self.calinski(labels=labels), self.davies(labels=labels), silhouette.median, silhouette.mean]])
         
-        columns = ['calinski', 'davies', 'silhouette_median', 'sihouette_mean']
+        columns = ['calinski', 'davies', 'silhouette_median', 'silhouette_mean']
 
         summary = pd.DataFrame(values, columns=columns)
         summary.loc[:, 'davies_transform'] = np.exp(-summary['davies'])
