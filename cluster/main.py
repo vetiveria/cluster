@@ -28,6 +28,11 @@ def main():
     # The best ...
     frame = pd.concat(selections, axis=0, ignore_index=True)
     index = frame['score'].idxmax()
+    logger.info(frame.info())
+    print('\n')
+    logger.info('\n\n{}\n'.format(frame.loc[:, ['calinski', 'davies_transform',  'density',
+                                                'scaled_calinski', 'scaled_davies_transform', 'scaled_density', 'score',
+                                                'silhouette_median', 'silhouette_mean', 'method']]))
 
     # Hence
     details: pd.Series = frame.iloc[index, :]
