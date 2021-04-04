@@ -46,7 +46,7 @@ class Interface:
         for key in self.keys:
 
             # In focus
-            self.logger.info('K Means: Modelling the {} projections\n'.format(self.descriptions[key]))
+            self.logger.info('K Means: Modelling the {} projections'.format(self.descriptions[key]))
 
             # Projection
             projection = self.projections.exc(key=key)
