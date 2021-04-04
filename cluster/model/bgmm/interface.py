@@ -36,14 +36,17 @@ class Interface:
 
     def exc(self, method: str):
 
-        parameters = cluster.model.bgmm.parameters.Parameters().exc()
+        store = os.path.join(self.warehouse, method)
+        if not os.path.exists(store):
+            os.makedirs(store)
 
+        parameters = cluster.model.bgmm.parameters.Parameters().exc()
         excerpts = []
         properties = []
         for key in self.keys:
 
             # In focus
-            self.logger.info('Bayesian GMM: Modelling the {} projections\n'.format(self.descriptions[key]))
+            self.logger.info('Bayesian GMM: Modelling the {} projections'.format(self.descriptions[key]))
 
             # Projection
             projection = self.projections.exc(key=key)
@@ -56,6 +59,8 @@ class Interface:
 
             # The best
             best = self.discriminator.exc(determinants=determinants)
+            best.properties.to_csv(path_or_buf=os.path.join(store, key + '.csv'),
+                                   index=False, header=True, encoding='utf-8')
 
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = key
