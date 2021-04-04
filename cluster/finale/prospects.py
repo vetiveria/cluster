@@ -23,7 +23,7 @@ class Prospects:
         self.warehouse = configurations.warehouse
 
         # Logging
-        logging.basicConfig(level=logging.INFO, format='%(message)s%(asctime)s.%(msecs)03d',
+        logging.basicConfig(level=logging.INFO, format='%(message)s\n%(asctime)s.%(msecs)03d',
                             datefmt='%Y-%m-%d %H:%M:%S')
         self.logger = logging.getLogger(__name__)
 
@@ -92,9 +92,9 @@ class Prospects:
         melted = original.melt(id_vars=['COUNTYGEOID', 'label'], var_name='tri_chem_id', value_name='quantity_kg')
         print('\n')
         self.logger.info(melted.info())
-        self.logger.info('\n# of distinct county & label pairs: {}\n'.format(
+        self.logger.info('\n# of distinct county & label pairs: {}'.format(
             melted[['COUNTYGEOID', 'label']].drop_duplicates().shape))
-        self.logger.info('\n# of distinct counties: {}\n'.format(
+        self.logger.info('\n# of distinct counties: {}'.format(
             melted[['COUNTYGEOID']].drop_duplicates().shape))
 
         releases = melted[melted['quantity_kg'] > 0].copy()
