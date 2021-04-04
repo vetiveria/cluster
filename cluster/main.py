@@ -16,7 +16,7 @@ def main():
     supplements = []
     for method in ['kmc', 'bgmm', 'gmm']:
         # In focus
-        logger.info('\n\n{}\n'.format(method))
+        logger.info('\n\n{}'.format(method))
 
         # Modelling
         selection, properties = interface.exc(method=method)
@@ -28,11 +28,8 @@ def main():
     # The best ...
     frame = pd.concat(selections, axis=0, ignore_index=True)
     index = frame['score'].idxmax()
-    logger.info(frame.info())
-    print('\n')
-    logger.info('\n\n{}\n'.format(frame.loc[:, ['calinski', 'davies_transform',  'density',
-                                                'scaled_calinski', 'scaled_davies_transform', 'scaled_density', 'score',
-                                                'silhouette_median', 'silhouette_mean', 'method']]))
+    logger.info('\n\n{}\n'.format(frame.loc[:, ['calinski', 'calinski_inverse', 'davies',  'density',
+                                                'score', 'silhouette_median', 'silhouette_mean', 'method']]))
 
     # Hence
     details: pd.Series = frame.iloc[index, :]
@@ -48,7 +45,7 @@ if __name__ == '__main__':
     sys.path.append(os.path.join(root, 'clustering'))
 
     # Logging
-    logging.basicConfig(level=logging.INFO, format='%(message)s%(asctime)s.%(msecs)03d', datefmt='%Y-%m-%d %H:%M:%S')
+    logging.basicConfig(level=logging.INFO, format='%(message)s\n%(asctime)s.%(msecs)03d', datefmt='%Y-%m-%d %H:%M:%S')
     logger = logging.getLogger(__name__)
 
     # Configurations

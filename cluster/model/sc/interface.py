@@ -1,5 +1,6 @@
 import logging
 import pandas as pd
+import os
 import config
 
 import cluster.src.projections
@@ -17,6 +18,7 @@ class Interface:
 
         # Configurations
         configurations = config.Config()
+        self.warehouse = configurations.warehouse
 
         # The keys of the projection matrices, and their descriptions
         self.keys = configurations.keys
@@ -34,14 +36,17 @@ class Interface:
 
     def exc(self, method: str):
 
-        parameters = cluster.model.sc.parameters.Parameters().exc()
+        store = os.path.join(self.warehouse, method)
+        if not os.path.exists(store):
+            os.makedirs(store)
 
+        parameters = cluster.model.sc.parameters.Parameters().exc()
         excerpts = []
         properties = []
         for key in self.keys:
 
             # In focus
-            self.logger.info('Spectral Clustering: Modelling the {} projections\n'.format(self.descriptions[key]))
+            self.logger.info('Spectral Clustering: Modelling the {} projections'.format(self.descriptions[key]))
 
             # Projection
             projection = self.projections.exc(key=key)
@@ -54,6 +59,8 @@ class Interface:
 
             # The best
             best = self.discriminator.exc(determinants=determinants)
+            best.properties.to_csv(path_or_buf=os.path.join(store, key + '.csv'),
+                                   index=False, header=True, encoding='utf-8')
 
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = key
@@ -66,6 +73,8 @@ class Interface:
 
         # Concatenate
         excerpt = pd.concat(excerpts, axis=0, ignore_index=True)
+        excerpt.to_csv(path_or_buf=os.path.join(self.warehouse, method + '.csv'),
+                       index=False, header=True, encoding='utf-8')
 
         # Common steps
         index = excerpt['score'].idxmax()

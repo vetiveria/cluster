@@ -47,16 +47,20 @@ class Densities:
         return aggregates
 
     @staticmethod
-    def density(series) -> np.float:
+    def density(series: np.ndarray) -> np.float:
 
-        condition = (series >= 0)
+        number_of_rows = series.shape[0]
+        quotients = np.true_divide(series, number_of_rows)
+        calculation = quotients.sum()
 
-        if (np.sum(condition) > 0) & (series[condition].sum() > 0):
-            quotient = np.true_divide(series[~condition].sum(), series[condition].sum())
-        else:
-            quotient = 1
+        # condition = (series >= 0)
+        # if (np.sum(condition) > 0) & (series[condition].sum() > 0):
+        #     quotient = np.true_divide(series[~condition].sum(), series[condition].sum())
+        # else:
+        #     quotient = 1
+        # calculation = 1 - np.absolute(quotient)
                 
-        return 1 - np.absolute(quotient)
+        return calculation
 
     def exc(self, model):
         """
@@ -64,13 +68,13 @@ class Densities:
         orient 'index', which can reconstructed via pd.DataFrame.from_dict(..., orient='index')
         """
 
-        # points
+        # points: gets the silhouette score of each point
         points = self.points(model=model)
 
-        # clusters        
+        # clusters: conducts calculations per cluster based on the silhouette scores of the points of a cluster
         clusters = self.clusters(points=points)
 
-        # Hence
+        # Hence ...
         values = np.array([[clusters['density'].sum(), clusters.to_dict(orient='index')]])
         columns = ['density', 'clusters']
         

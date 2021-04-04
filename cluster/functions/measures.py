@@ -33,7 +33,8 @@ class Measures:
 
         return sklearn.metrics.davies_bouldin_score(self.matrix, labels)
 
-    def silhouette(self, scores):
+    @staticmethod
+    def silhouette(scores):
         """
         Calculates the silhouette medians \\uparrow & silhouette mean \\uparrow.  Note: the silhouette mean determined
         via 
@@ -66,11 +67,12 @@ class Measures:
         silhouette = self.silhouette(scores=scores)
         
         # In summary
-        values = np.array([[self.calinski(labels=labels), self.davies(labels=labels), silhouette.median, silhouette.mean]])
+        values = np.array([[self.calinski(labels=labels), self.davies(labels=labels),
+                            silhouette.median, silhouette.mean]])
         
         columns = ['calinski', 'davies', 'silhouette_median', 'silhouette_mean']
 
         summary = pd.DataFrame(values, columns=columns)
-        summary.loc[:, 'davies_transform'] = np.exp(-summary['davies'])
+        summary.loc[:, 'calinski_inverse'] = np.true_divide(1, summary['calinski'])
 
         return summary
