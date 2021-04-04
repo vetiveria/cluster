@@ -33,19 +33,19 @@ missing <- principals[!accumulations, on = "COUNTYGEOID"]
 
 
 # Draw
-fig <- plot_ly(principals, x = ~C01, y = ~C02, z = ~C03, color = ~label, 
+fig <- plot_ly(principals, x = ~C02, y = ~C03, z = ~C04, color = ~label, 
                colors = c('#000000', '#BF382A', '#0C4B8E', '#808000', '#993300', '#ff9900'))
 fig <- fig %>% add_markers()
-fig <- fig %>% layout(scene = list(xaxis = list(title = 'PC 1'), 
-                                   yaxis = list(title = 'PC 2'),
-                                   zaxis = list(title = 'PC 3')))
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'PC 2'), 
+                                   yaxis = list(title = 'PC 3'),
+                                   zaxis = list(title = 'PC 4')))
 htmlwidgets::saveWidget(fig, "clusters.html")
 
 
-fig <- plot_ly(readings, x = ~C01, y = ~C02, z = ~C03)
+fig <- plot_ly(readings, x = ~C02, y = ~C03, z = ~C04)
 fig <- fig %>% add_markers(size = ~deathRate, color = ~label, colors = c('#000000', '#BF382A', '#0C4B8E', '#808000', '#993300', '#ff9900'))
-fig <- fig %>% layout(scene = list(xaxis = list(title = 'PC 1'), 
-                                   yaxis = list(title = 'PC 2'),
-                                   zaxis = list(title = 'PC 3')))
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'PC 2'), 
+                                   yaxis = list(title = 'PC 3'),
+                                   zaxis = list(title = 'PC 4')))
 htmlwidgets::saveWidget(fig, "contexts.html")
 
