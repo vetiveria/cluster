@@ -57,15 +57,3 @@ Time option:
 	start <- Sys.time()
 	elapsed <- as.integer(difftime(Sys.time(), start, units = "secs")) 
 ```
-
-Colours option
-```r
-  # if 
-    colours <- colors(distinct = TRUE)
-    
-  # then 
-    colours[1 + as.numeric(as.character(labels))] 
-    
-  # whereby 'labels' is of type factor, and '+ 1' ensures that the labels 
-  # are from '1', instead of '0', onwards.
-```
