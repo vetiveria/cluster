@@ -87,7 +87,7 @@ class Prospects:
         # Releases per determined cluster
         for i in melted['label'].unique():
             frame = melted[melted['label'] == i]
-            self.write(blob=frame, sections=['releases', '{:02d}.csv'])
+            self.write(blob=frame, sections=['releases', '{:02d}.csv'.format(i)])
 
         # Reduced releases
         releases = melted[melted['quantity_kg'] > 0].copy()
