@@ -32,8 +32,6 @@ class Prospects:
         self.supplements = supplements
 
         # Design & Projections Matrices
-        self.design = cluster.src.design.Design().exc()
-
         self.projections = cluster.src.projections.Projections()
         self.projection = self.projections.exc(key=self.details.key)
         self.labels = self.labels_(matrix=self.projection.tensor)
@@ -52,55 +50,68 @@ class Prospects:
 
         return labels
 
-    def data_(self) -> (pd.DataFrame, pd.DataFrame):
+    def supplements_(self):
         """
 
-        :return: The original data set, and its principals w.r.t. a projection in space
-        """
-
-        # Principals
-        principals: pd.DataFrame = self.projection.frame
-        principals.loc[:, 'label'] = self.labels
-
-        # Original
-        original: pd.DataFrame = self.design.frame
-        original.loc[:, 'label'] = self.labels
-
-        return principals, original
-
-    def write(self, blob: pd.DataFrame, name: str):
-        """
-
-        :param blob: The DataFrame that will be written to disc
-        :param name: The name of the file, including its extension
         :return:
         """
 
-        blob.to_csv(path_or_buf=os.path.join(self.warehouse, name), index=False, header=True,
+        self.write(blob=self.supplements, sections=['supplements.csv'])
+
+    def principals_(self):
+        """
+
+        :return: The principals w.r.t. a projection in space
+        """
+
+        principals: pd.DataFrame = self.projection.frame
+        principals.loc[:, 'label'] = self.labels
+
+        self.write(blob=principals, sections=['principals.csv'])
+
+    def releases_(self):
+        """
+
+        :return:
+        """
+
+        # Original
+        design = cluster.src.design.Design().exc()
+        original: pd.DataFrame = design.frame
+        original.loc[:, 'label'] = self.labels
+
+        melted = original.melt(id_vars=['COUNTYGEOID', 'label'], var_name='tri_chem_id', value_name='quantity_kg')
+        assert melted[['COUNTYGEOID', 'label']].drop_duplicates().shape[0] == \
+            melted[['COUNTYGEOID']].drop_duplicates().shape[0], "Imbalanced releases data"
+
+        # Releases per determined cluster
+        for i in melted['label'].unique():
+            frame = melted[melted['label'] == i]
+            self.write(blob=frame, sections=['releases', '{:02d}.csv'])
+
+        # Reduced releases
+        releases = melted[melted['quantity_kg'] > 0].copy()
+        self.write(blob=releases, sections=['releases.csv'])
+
+    def write(self, blob: pd.DataFrame, sections: list):
+        """
+
+        :param blob: The DataFrame that will be written to disc
+        :param sections: The name of the file, including its extension
+        :return:
+        """
+
+        blob.to_csv(path_or_buf=os.path.join(self.warehouse, *sections), index=False, header=True,
                     encoding='UTF-8')
 
     def exc(self):
         """
-        Weights: All data value are in kilograms, ref.
+        Weights: All data values are in kilograms, ref.
             https://github.com/vetiveria/spots/blob/master/src/releases/helpers.py#L52
 
         :return:
         """
 
-        principals, original = self.data_()
-
-        melted = original.melt(id_vars=['COUNTYGEOID', 'label'], var_name='tri_chem_id', value_name='quantity_kg')
-        print('\n')
-        self.logger.info(melted.info())
-        self.logger.info('\n# of distinct county & label pairs: {}'.format(
-            melted[['COUNTYGEOID', 'label']].drop_duplicates().shape))
-        self.logger.info('\n# of distinct counties: {}'.format(
-            melted[['COUNTYGEOID']].drop_duplicates().shape))
-
-        releases = melted[melted['quantity_kg'] > 0].copy()
-        print('\n')
-        self.logger.info(releases.info())
-
-        self.write(blob=releases, name='releases.csv')
-        self.write(blob=principals, name='principals.csv')
-        self.write(blob=self.supplements, name='supplements.csv')
+        self.principals_()
+        self.releases_()
+        self.supplements_()
