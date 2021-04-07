@@ -16,8 +16,8 @@ trainingdata <- data.matrix(principals[, !c("COUNTYGEOID", "label")], rownames.f
 gazetteer <- gazetteer()
 
 
-# Labels
-labels <- principals$label
+# Option
+distances <- dist(trainingdata, method = "euclidean", diag = FALSE, upper = FALSE)
 
 
 # Label colours
@@ -57,7 +57,7 @@ epoch_callback <- function(x){
 
 
 # tSNE Algorithm
-estimates <- tsne(trainingdata, initial_config = NULL, k = 3, initial_dims = variables$initial_dims, max_iter = 1600,
+estimates <- tsne(distances, initial_config = NULL, k = 3, initial_dims = variables$initial_dims, max_iter = 1600,
      epoch_callback = epoch_callback, epoch = variables$epoch)
 tSNE3DGraph(data = structure(matrix = estimates), fileName = "estimates", colours = colours)
 
