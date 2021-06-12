@@ -8,7 +8,7 @@ class Projections:
 
     def __init__(self):
         """
-        Constructor
+        The constructor
         """
 
         # Data Class
@@ -43,6 +43,6 @@ class Projections:
 
         # group, key, url, description, identifiers
         frame: pd.DataFrame = self.frame_(datum=datum)
-        tensor: np.ndarray = frame.drop(columns=datum.identifiers.keys).values
+        tensor: np.ndarray = frame.drop(columns=list(datum.identifiers.keys())).values
 
         return self.Projection._make((frame, tensor))
