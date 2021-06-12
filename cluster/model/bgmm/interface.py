@@ -33,54 +33,66 @@ class Interface:
         # And, the data projections that will be modelled
         self.projections = cluster.src.projections.Projections()
         self.discriminator = cluster.functions.discriminator.Discriminator()
+        self.parameters = cluster.model.bgmm.parameters.Parameters().exc()
 
-        # Logging
-        logging.basicConfig(level=logging.INFO, format='%(message)s%(asctime)s.%(msecs)03d',
-                            datefmt='%Y-%m-%d %H:%M:%S')
-        self.logger = logging.getLogger(__name__)
+        # Method store within a group directory
+        self.store = os.path.join(self.directory, self.method)
+        if not os.path.exists(self.store):
+            os.makedirs(self.store)
+
+    @staticmethod
+    def datum_():
+        """
+
+        :return:
+        """
+
+        return collections.namedtuple(typename='Datum',
+                                      field_names=['group', 'key', 'url', 'description', 'identifiers'])
 
     def exc(self):
+        """
 
-        store = os.path.join(self.directory, self.method)
-        if not os.path.exists(store):
-            os.makedirs(store)
+        :return:
+        """
 
-        parameters = cluster.model.bgmm.parameters.Parameters().exc()
         excerpts = []
         for key_, arg in self.kernels.items():
 
+            datum = self.datum_()._make((self.group, key_, arg['url'], arg['description'], arg['identifiers']))
+
             # In focus
-            self.logger.info('Bayesian GMM: Modelling the {} projections'.format(arg['description']))
+            logging.info('Bayesian GMM: Modelling the {} projections'.format(datum.description))
 
             # Projection
-            projection = self.projections.exc(group=self.group, key=key_)
+            projection = self.projections.exc(datum=datum)
 
             # The determined models ...
             models: list = cluster.model.bgmm.algorithm.Algorithm(
-                matrix=projection.tensor, parameters=parameters).exc()
+                matrix=projection.tensor, parameters=self.parameters).exc()
             determinants: pd.DataFrame = cluster.model.bgmm.determinants.Determinants(
                 matrix=projection.tensor, models=models).exc()
 
             # The best ... properties, index, estimate, discriminant
             best = self.discriminator.exc(determinants=determinants)
-            best.properties.to_csv(path_or_buf=os.path.join(store, key_ + '.csv'),
+            best.properties.to_csv(path_or_buf=os.path.join(self.store, datum.key + '.csv'),
                                    index=False, header=True, encoding='utf-8')
 
-            # ... the best w.r.t. a kernel/key_ type
+            # ... the best w.r.t. a kernel/datum.key type
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
-            vector.loc[:, 'key'] = key_
-            vector.loc[:, 'key_description'] = arg['description']
+            vector.loc[:, 'key'] = datum.key
+            vector.loc[:, 'key_description'] = datum.description
             vector.loc[:, 'method'] = self.method
 
             # Append
             excerpts.append(vector)
 
-        # Concatenate ... this will have a model per kernel/key_ type
+        # Concatenate ... this will have a model per kernel/key type
         excerpt = pd.concat(excerpts, axis=0, ignore_index=True)
         excerpt.to_csv(path_or_buf=os.path.join(self.directory, self.method + '.csv'),
                        index=False, header=True, encoding='utf-8')
 
-        # Common steps ... this set of steps selects the best model from the best per kernel/key_ type
+        # Common steps ... this set of steps selects the best model from the best per kernel/key type
         index = excerpt['score'].idxmax()
         summary: pd.DataFrame = excerpt.iloc[index:(index + 1), :]
         summary.reset_index(drop=True, inplace=True)
