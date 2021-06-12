@@ -9,8 +9,10 @@ import pandas as pd
 def main():
 
     # Prepare
-    directories.cleanup()
-    directories.create()
+    head = os.path.join(configurations.warehouse, group)
+    releases = os.path.join(head, 'releases')
+    directories.cleanup(directories_=[head])
+    directories.create(directories_=[head, releases])
 
     # Model
     selections = []
@@ -52,6 +54,7 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
 
     # Libraries
+    import config
     import cluster.model.interface
     import cluster.finale.prospects
     import cluster.src.directories
@@ -77,6 +80,7 @@ if __name__ == '__main__':
     Instances
     """
     # Instances
+    configurations = config.Config()
     interface = cluster.model.interface.Interface(group=group, kernels=kernels)
     directories = cluster.src.directories.Directories()
 
