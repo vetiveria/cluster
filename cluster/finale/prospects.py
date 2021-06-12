@@ -1,39 +1,34 @@
-import logging
+import collections
 import os
 
 import numpy as np
 import pandas as pd
 
-import cluster.src.design
+import cluster.src.underlying
 import cluster.src.projections
 import config
 
 
 class Prospects:
 
-    def __init__(self, details: pd.Series, supplements: pd.DataFrame):
+    def __init__(self, details: pd.Series, source: collections.namedtuple, group: str):
+        """
+        Constructor
+        :param details:
+        :param group:
         """
 
-        :param details:
-        :param supplements:
-        """
+        self.details = details
+        self.source = source
+        self.group = group
 
         # Configurations
         configurations = config.Config()
-        self.warehouse = configurations.warehouse
+        self.directory = os.path.join(configurations.warehouse, self.group)
 
-        # Logging
-        logging.basicConfig(level=logging.INFO, format='%(message)s\n%(asctime)s.%(msecs)03d',
-                            datefmt='%Y-%m-%d %H:%M:%S')
-        self.logger = logging.getLogger(__name__)
-
-        # Calculations
-        self.details = details
-        self.supplements = supplements
-
-        # Design & Projections Matrices
+        # Matrices
         self.projections = cluster.src.projections.Projections()
-        self.projection = self.projections.exc(key=self.details.key)
+        self.projection = self.projections.exc(datum=self.details.datum)
         self.labels = self.labels_(matrix=self.projection.tensor)
 
     def labels_(self, matrix):
@@ -49,14 +44,6 @@ class Prospects:
             labels: np.ndarray = self.details.model.predict(matrix)
 
         return labels
-
-    def supplements_(self):
-        """
-
-        :return:
-        """
-
-        self.write(blob=self.supplements, sections=['supplements.csv'])
 
     def principals_(self):
         """
@@ -76,8 +63,8 @@ class Prospects:
         """
 
         # Original
-        design = cluster.src.design.Design().exc()
-        original: pd.DataFrame = design.frame
+        underlying = cluster.src.underlying.Underlying(source=self.source).exc()
+        original: pd.DataFrame = underlying.frame
         original.loc[:, 'label'] = self.labels
 
         melted = original.melt(id_vars=['COUNTYGEOID', 'label'], var_name='tri_chem_id', value_name='quantity_kg')
@@ -101,7 +88,7 @@ class Prospects:
         :return:
         """
 
-        blob.to_csv(path_or_buf=os.path.join(self.warehouse, *sections), index=False, header=True,
+        blob.to_csv(path_or_buf=os.path.join(self.directory, *sections), index=False, header=True,
                     encoding='UTF-8')
 
     def exc(self):
@@ -114,4 +101,3 @@ class Prospects:
 
         self.principals_()
         self.releases_()
-        self.supplements_()
