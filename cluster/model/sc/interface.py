@@ -48,7 +48,7 @@ class Interface:
         """
 
         return collections.namedtuple(typename='Datum',
-                                      field_names=['group', 'key', 'url', 'description', 'identifiers'])
+                                      field_names=['group', 'method', 'key', 'url', 'description', 'identifiers'])
 
     def exc(self):
         """
@@ -59,7 +59,7 @@ class Interface:
         excerpts = []
         for key_, arg in self.kernels.items():
 
-            datum = self.datum_()._make((self.group, key_, arg['url'], arg['description'], arg['identifiers']))
+            datum = self.datum_()._make((self.group, self.method, key_, arg['url'], arg['description'], arg['identifiers']))
 
             # In focus
             logging.info('Spectral Clustering: Modelling the {} projections'.format(datum.description))
@@ -81,8 +81,8 @@ class Interface:
             # ... the best w.r.t. a kernel/datum.key type
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = datum.key
-            vector.loc[:, 'key_description'] = datum.description
-            vector.loc[:, 'method'] = self.method
+            vector.loc[:, 'method'] = datum.method
+            vector.loc[:, 'datum'] = datum
 
             # Append
             excerpts.append(vector)
@@ -94,7 +94,7 @@ class Interface:
 
         # Common steps ... this set of steps selects the best model from the best per kernel/key type
         index = excerpt['score'].idxmax()
-        summary = excerpt.iloc[index:(index + 1), :]
+        summary: pd.DataFrame = excerpt.iloc[index:(index + 1), :]
         summary.reset_index(drop=True, inplace=True)
 
         return summary
