@@ -14,21 +14,20 @@ import cluster.model.gmm.parameters
 
 class Interface:
 
-    def __init__(self, group: str):
+    def __init__(self, group: str, kernels: dict):
         """
-
+        Constructor
         :param group:
+        :param kernels: The metadata details of the kernel projections that would undergo clustering
         """
 
         self.method = 'gmm'
         self.group = group
+        self.kernels = kernels
 
         # Configurations
         configurations = config.Config()
         self.directory = os.path.join(configurations.warehouse, self.group)
-
-        # The keys of the projection matrices, and their descriptions
-        self.kernels: dict = configurations.kernels
 
         # And, the data projections that will be modelled
         self.projections = cluster.src.projections.Projections()
@@ -47,10 +46,10 @@ class Interface:
 
         parameters = cluster.model.gmm.parameters.Parameters().exc()
         excerpts = []
-        for key_, description_ in self.kernels.items():
+        for key_, arg in self.kernels.items():
 
             # In focus
-            self.logger.info('Gaussian Mixture Model: Modelling the {} projections'.format(description_))
+            self.logger.info('Gaussian Mixture Model: Modelling the {} projections'.format(arg['description']))
 
             # Projection
             projection = self.projections.exc(group=self.group, key=key_)
@@ -69,7 +68,7 @@ class Interface:
             # ... the best w.r.t. a kernel/key_ type
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = key_
-            vector.loc[:, 'key_description'] = description_
+            vector.loc[:, 'key_description'] = arg['description']
             vector.loc[:, 'method'] = self.method
 
             # Append
