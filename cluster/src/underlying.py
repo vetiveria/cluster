@@ -1,22 +1,20 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 import collections
 
-import config
 
-
-# noinspection PyUnresolvedReferences,PyProtectedMember
 class Design:
 
-    def __init__(self):
+    def __init__(self, design: collections.namedtuple):
         """
         The constructor
 
         """
 
-        configurations = config.Config()
-        self.url, self.identifiers = configurations.design_()
+        self.attributes_url = design.attributesURL
+        self.data_url = design.dataURL
+        self.identifiers = design.identifiers
 
         self.DesignCollection = collections.namedtuple(typename='DesignCollection', field_names=['frame', 'tensor'])
 
@@ -27,7 +25,7 @@ class Design:
         """
 
         try:
-            data = pd.read_csv(self.url.attributes, header=0, encoding='UTF-8')
+            data = pd.read_csv(self.attributes_url, header=0, encoding='UTF-8')
         except OSError as err:
             raise ("OS Error: {0}".format(err))
 
@@ -43,21 +41,15 @@ class Design:
         :return:
         """
 
+        fields, types = self.attributes()
+
         try:
-            data = pd.read_csv(filepath_or_buffer=self.url.data,
-                               header=0, encoding='UTF-8', dtype=self.identifiers)
+            data = pd.read_csv(filepath_or_buffer=self.data_url, usecols=fields,
+                               header=0, encoding='UTF-8', dtype=types)
         except OSError as err:
             raise Exception(err.strerror) from err
 
         return data
-
-    def tensor_(self, frame: pd.DataFrame) -> np.ndarray:
-        """
-
-        :return:
-        """
-
-        return frame.drop(columns=list(self.identifiers.keys())).values
 
     def exc(self):
         """
@@ -65,7 +57,7 @@ class Design:
         :return:
         """
 
-        frame = self.frame_()
-        tensor = self.tensor_(frame=frame)
+        frame: pd.DataFrame = self.frame_()
+        tensor: np.ndarray = frame.drop(columns=list(self.identifiers.keys())).values
 
         return self.DesignCollection._make((frame, tensor))
