@@ -4,7 +4,7 @@ import pandas as pd
 import collections
 
 
-class Design:
+class Underlying:
 
     def __init__(self, design: collections.namedtuple):
         """
@@ -29,7 +29,6 @@ class Design:
         except OSError as err:
             raise ("OS Error: {0}".format(err))
 
-        # For 'usecols' & 'dtype', of the data to be read, respectively
         fields = data.field.to_list()
         types = data[['field', 'type']].set_index(keys='field').to_dict(orient='dict')['type']
 
