@@ -14,15 +14,21 @@ import cluster.model.gmm.parameters
 
 class Interface:
 
-    def __init__(self):
+    def __init__(self, group: str):
+        """
+
+        :param group:
+        """
+
+        self.method = 'gmm'
+        self.group = group
 
         # Configurations
         configurations = config.Config()
-        self.warehouse = configurations.warehouse
+        self.directory = os.path.join(configurations.warehouse, self.group)
 
         # The keys of the projection matrices, and their descriptions
-        self.keys = configurations.keys
-        self.descriptions = configurations.descriptions_()
+        self.kernels: dict = configurations.kernels
 
         # And, the data projections that will be modelled
         self.projections = cluster.src.projections.Projections()
@@ -30,26 +36,24 @@ class Interface:
 
         # Logging
         logging.basicConfig(level=logging.INFO,
-                            format='%(message)s%(asctime)s.%(msecs)03d',
-                            datefmt='%Y-%m-%d %H:%M:%S')
+                            format='%(message)s%(asctime)s.%(msecs)03d', datefmt='%Y-%m-%d %H:%M:%S')
         self.logger = logging.getLogger(__name__)
 
-    def exc(self, method: str):
+    def exc(self):
 
-        store = os.path.join(self.warehouse, method)
+        store = os.path.join(self.directory, self.method)
         if not os.path.exists(store):
             os.makedirs(store)
 
         parameters = cluster.model.gmm.parameters.Parameters().exc()
         excerpts = []
-        properties = []
-        for key in self.keys:
+        for key_, description_ in self.kernels.items():
 
             # In focus
-            self.logger.info('Gaussian Mixture Model: Modelling the {} projections'.format(self.descriptions[key]))
+            self.logger.info('Gaussian Mixture Model: Modelling the {} projections'.format(description_))
 
             # Projection
-            projection = self.projections.exc(key=key)
+            projection = self.projections.exc(group=self.group, key=key_)
 
             # The determined models ...
             models: list = cluster.model.gmm.algorithm.Algorithm(
@@ -59,26 +63,26 @@ class Interface:
 
             # The best
             best = self.discriminator.exc(determinants=determinants)
-            best.properties.to_csv(path_or_buf=os.path.join(store, key + '.csv'),
+            best.properties.to_csv(path_or_buf=os.path.join(store, key_ + '.csv'),
                                    index=False, header=True, encoding='utf-8')
 
+            # ... the best w.r.t. a kernel/key_ type
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
-            vector.loc[:, 'key'] = key
-            vector.loc[:, 'key_description'] = self.descriptions[key]
-            vector.loc[:, 'method'] = method
+            vector.loc[:, 'key'] = key_
+            vector.loc[:, 'key_description'] = description_
+            vector.loc[:, 'method'] = self.method
 
             # Append
             excerpts.append(vector)
-            properties.append(best.properties)
 
-        # Concatenate
+        # Concatenate ... this will have a model per kernel/key_ type
         excerpt = pd.concat(excerpts, axis=0, ignore_index=True)
-        excerpt.to_csv(path_or_buf=os.path.join(self.warehouse, method + '.csv'),
+        excerpt.to_csv(path_or_buf=os.path.join(self.directory, self.method + '.csv'),
                        index=False, header=True, encoding='utf-8')
 
-        # Common steps
+        # Common steps ... this set of steps selects the best model from the best per kernel/key_ type
         index = excerpt['score'].idxmax()
         summary = excerpt.iloc[index:(index + 1), :]
         summary.reset_index(drop=True, inplace=True)
 
-        return summary, properties[index]
+        return summary
