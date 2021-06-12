@@ -27,7 +27,7 @@ class Arguments:
         return req
 
     @staticmethod
-    def parameters(elements: requests.models.Response) -> (str, collections.namedtuple, collections.namedtuple):
+    def parameters(elements: requests.models.Response) -> (str, dict, collections.namedtuple):
         """
         :param elements: The content of the input YAML file
         :return:
@@ -36,12 +36,10 @@ class Arguments:
         text = yaml.safe_load(elements.text)
 
         # The name of the data set/group
-        group = text['group']
+        group: str = text['group']
 
         # The details of the kernel matrices
-        Kernels = collections.namedtuple(typename='Kernels', 
-                                                       field_names=['url', 'descriptions'])
-        kernels = Kernels._make((text['projections']['url'], text['projections']['descriptions']))
+        kernels: dict = text['kernels']
 
         # The details of the design matrix
         Design = collections.namedtuple(typename='Design', field_names=['dataURL', 'attributesURL'])
