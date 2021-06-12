@@ -35,8 +35,9 @@ def main():
     details: pd.Series = frame.iloc[index, :]
     details.rename('details')
 
-    # Save, cluster.finale.prospects...
+    # Save, cluster.finale.prospects... details & either source = design or source = original
     print(details)
+    cluster.finale.prospects.Prospects(details=details, source=design, group=group)
 
 
 if __name__ == '__main__':
@@ -70,7 +71,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Get the data parameters encoded
-    group, kernels, _ = arguments.parameters(elements=args.elements)
+    group, kernels, design, original = arguments.parameters(elements=args.elements)
 
     """
     Instances
