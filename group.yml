@@ -1,8 +1,9 @@
 group: 'cancer'
-projections:
-  url: {rbf: 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/cancer/principals/rbf/projections.csv',
-        cosine: 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/cancer/principals/cosine/projections.csv'}
-  descriptions: {rbf: 'Radial Basis Function Kernel PCA', cosine: 'Cosine Kernel PCA'}
+kernels: {
+  'rbf': {'url': 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/cancer/principals/rbf/projections.csv',
+          'description': 'Radial Basis Function Kernel PCA'},
+  'cosine': {'url': 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/cancer/principals/cosine/projections.csv',
+             'description': 'Cosine Kernel PCA'}}
 design:
   url:
     data: 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/cancer/design/design.csv'
