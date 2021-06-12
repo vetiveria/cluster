@@ -9,10 +9,9 @@ import pandas as pd
 def main():
 
     # Prepare
-    head = os.path.join(configurations.warehouse, group)
-    releases = os.path.join(head, 'releases')
-    directories.cleanup(directories_=[head])
-    directories.create(directories_=[head, releases])
+    directory = os.path.join(configurations.warehouse, group)
+    directories.cleanup(directories_=[directory])
+    directories.create(directories_=[directory])
 
     # Model
     selections = []
