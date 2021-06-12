@@ -6,17 +6,17 @@ import collections
 
 class Underlying:
 
-    def __init__(self, design: collections.namedtuple):
-        """
-        The constructor
-
+    def __init__(self, source: collections.namedtuple):
         """
 
-        self.attributes_url = design.attributesURL
-        self.data_url = design.dataURL
-        self.identifiers = design.identifiers
+        :param source: fields ->['dataURL', 'attributesURL', 'identifiers']
+        """
 
-        self.DesignCollection = collections.namedtuple(typename='DesignCollection', field_names=['frame', 'tensor'])
+        self.attributes_url = source.attributesURL
+        self.data_url = source.dataURL
+        self.identifiers = source.identifiers
+
+        self.DataCollection = collections.namedtuple(typename='DataCollection', field_names=['frame', 'tensor'])
 
     def attributes(self):
         """
@@ -59,4 +59,4 @@ class Underlying:
         frame: pd.DataFrame = self.frame_()
         tensor: np.ndarray = frame.drop(columns=list(self.identifiers.keys())).values
 
-        return self.DesignCollection._make((frame, tensor))
+        return self.DataCollection._make((frame, tensor))
