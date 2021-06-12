@@ -2,7 +2,6 @@ import collections
 import logging
 import pandas as pd
 import os
-import config
 
 import cluster.src.projections
 
@@ -15,11 +14,12 @@ import cluster.model.kmc.determinants
 
 class Interface:
 
-    def __init__(self, group: str, kernels: dict):
+    def __init__(self, group: str, kernels: dict, directory: str):
         """
         Constructor
-        :param group:
+        :param group: baseline?, cancer?, kidney?
         :param kernels: The metadata details of the kernel projections that would undergo clustering
+        :param directory: The directory for the group's calculations
         """
 
         self.method = 'kmc'
@@ -27,8 +27,7 @@ class Interface:
         self.kernels = kernels
 
         # Configurations
-        configurations = config.Config()
-        self.directory = os.path.join(configurations.warehouse, self.group)
+        self.directory = directory
 
         # And, the data projections that will be modelled
         self.projections = cluster.src.projections.Projections()
