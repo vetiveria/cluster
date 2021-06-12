@@ -13,5 +13,3 @@ class Config:
         # Paths, Directories
         self.root = os.getcwd()
         self.warehouse = os.path.join(self.root, 'warehouse')
-        self.releases = os.path.join(self.warehouse, 'releases')
-        self.directories = [self.warehouse, self.releases]
