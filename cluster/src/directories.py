@@ -1,18 +1,17 @@
 import os
 
-import config
-
 
 class Directories:
 
     def __init__(self):
+        """
 
-        configurations = config.Config()
-        self.directories = configurations.directories
+        """
 
-    def cleanup(self):
+    @staticmethod
+    def cleanup(directories_: list):
 
-        for path in self.directories:
+        for path in directories_:
 
             if not os.path.exists(path):
                 continue
@@ -26,8 +25,9 @@ class Directories:
              for directory in directories
              if os.path.exists(os.path.join(base, directory))]
 
-    def create(self):
+    @staticmethod
+    def create(directories_: list):
 
-        for path in self.directories:
+        for path in  directories_:
             if not os.path.exists(path):
                 os.makedirs(path)
