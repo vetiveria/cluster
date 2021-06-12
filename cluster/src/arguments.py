@@ -42,7 +42,10 @@ class Arguments:
         kernels: dict = text['kernels']
 
         # The details of the design matrix
-        Design = collections.namedtuple(typename='Design', field_names=['dataURL', 'attributesURL'])
-        design = Design._make((text['design']['url']['data'], text['design']['url']['attributes']))
+        Design = collections.namedtuple(typename='Design', field_names=['dataURL', 'attributesURL', 'identifiers'])
+        design = Design._make((text['design']['url']['data'], text['design']['url']['attributes'], text['design']['identifiers']))
 
-        return group, kernels, design
+        Original = collections.namedtuple(typename='Original', field_names=['dataURL', 'attributesURL', 'identifiers'])
+        original = Original._make((text['design']['url']['data'], text['design']['url']['attributes'], text['design']['identifiers']))
+
+        return group, kernels, design, original
