@@ -7,7 +7,7 @@ class Arguments:
 
     def __init__(self):
         """
-
+        Constructor
         """
 
     @staticmethod
@@ -27,7 +27,7 @@ class Arguments:
         return req
 
     @staticmethod
-    def parameters(elements: requests.models.Response):
+    def parameters(elements: requests.models.Response) -> (str, collections.namedtuple, collections.namedtuple):
         """
         :param elements: The content of the input YAML file
         :return:
@@ -35,11 +35,16 @@ class Arguments:
 
         text = yaml.safe_load(elements.text)
 
-        ProjectionsURL = collections.namedtuple(typename='ProjectionsURL', field_names=['rbf', 'cosine'])
-        url = ProjectionsURL._make((text['projections']['url']['rbf'], text['projections']['url']['cosine']))
+        # The name of the data set/group
+        group = text['group']
 
-        ProjectionsDescription = collections.namedtuple(typename='ProjectionsDescription', field_names=['rbf', 'cosine'])
-        description = ProjectionsDescription._make(
-            (text['projections']['description']['rbf'], text['projections']['description']['cosine']))
+        # The details of the kernel matrices
+        Kernels = collections.namedtuple(typename='Kernels', 
+                                                       field_names=['url', 'descriptions'])
+        kernels = Kernels._make((text['projections']['url'], text['projections']['descriptions']))
 
-        return text['group'], url, description
+        # The details of the design matrix
+        Design = collections.namedtuple(typename='Design', field_names=['dataURL', 'attributesURL'])
+        design = Design._make((text['design']['url']['data'], text['design']['url']['attributes']))
+
+        return group, kernels, design
