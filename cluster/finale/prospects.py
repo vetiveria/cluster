@@ -6,27 +6,30 @@ import pandas as pd
 
 import cluster.src.underlying
 import cluster.src.projections
-import config
+import cluster.src.directories
 
 
 class Prospects:
 
-    def __init__(self, details: pd.Series, source: collections.namedtuple, group: str):
+    def __init__(self, details: pd.Series, source: collections.namedtuple, group: str, directory: str):
         """
         Constructor
         :param details:
+        :param source:
         :param group:
+        :param directory:
         """
 
         self.details = details
         self.source = source
         self.group = group
 
-        # Configurations
-        configurations = config.Config()
-        self.directory = os.path.join(configurations.warehouse, self.group)
+        self.directories = cluster.src.directories.Directories()
 
-        # Matrices
+        # Configurations
+        self.directory = directory
+
+        # Projections
         self.projections = cluster.src.projections.Projections()
         self.projection = self.projections.exc(datum=self.details.datum)
         self.labels = self.labels_(matrix=self.projection.tensor)
@@ -88,7 +91,11 @@ class Prospects:
         :return:
         """
 
-        blob.to_csv(path_or_buf=os.path.join(self.directory, *sections), index=False, header=True,
+        filestring = os.path.join(self.directory, *sections)
+        path = os.path.split(filestring)[0]
+        self.directories.create(directories_=[path])
+
+        blob.to_csv(path_or_buf=filestring, index=False, header=True,
                     encoding='UTF-8')
 
     def exc(self):
