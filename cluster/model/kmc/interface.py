@@ -81,8 +81,11 @@ class Interface:
             # ... the best w.r.t. a kernel/datum.key type
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = datum.key
+            vector.loc[:, 'keydesc'] = datum.description
             vector.loc[:, 'method'] = datum.method
-            vector.loc[:, 'datum'] = dict(datum._asdict())
+            vector.loc[:, 'group'] = datum.group
+            vector.loc[:, 'url'] = datum.url
+            vector.loc[:, 'identifiers'] = datum.identifiers
 
             # Append
             excerpts.append(vector)
