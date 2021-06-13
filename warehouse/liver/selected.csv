@@ -1,0 +1,22 @@
+,value
+calinski,7444.996516651726
+davies,0.24951393633652463
+silhouette_median,0.9599570289528764
+silhouette_mean,0.9227633327531954
+calinski_inverse,0.0001343183972972139
+density,6.468030588022838
+clusters,"{0: {'label': 0, 'median': 0.9599570289528764, 'mean': 0.9177874311986138, 'density': 0.917787431198607, 'sum': 1715.3447089102092, 'count': 1869}, 1: {'label': 1, 'median': 0.9776771426310542, 'mean': 0.9381788679389599, 'density': 0.9381788679389578, 'sum': 464.39853962978515, 'count': 495}, 2: {'label': 2, 'median': 0.9659773137596415, 'mean': 0.909599916962588, 'density': 0.909599916962588, 'sum': 311.0831716012051, 'count': 342}, 3: {'label': 3, 'median': 0.9959113628538264, 'mean': 0.9882908629035105, 'density': 0.9882908629035072, 'sum': 192.71671826618456, 'count': 195}, 4: {'label': 4, 'median': 0.9548078612360734, 'mean': 0.9143746650669013, 'density': 0.9143746650669019, 'sum': 104.23871181762675, 'count': 114}, 5: {'label': 5, 'median': 0.955300530075754, 'mean': 0.8803091447786427, 'density': 0.880309144778642, 'sum': 110.91895224210899, 'count': 126}, 6: {'label': 6, 'median': 0.962245526635657, 'mean': 0.9194896991736345, 'density': 0.9194896991736351, 'sum': 84.59305232397438, 'count': 92}}"
+r_clusters,7
+n_clusters,7
+inertia,79.51582494271779
+model,"KMeans(n_clusters=7, random_state=5)"
+score,6.218382333289016
+key,cosine
+keydesc,Cosine Kernel PCA
+method,kmc
+group,liver
+url,https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/liver/principals/kernel/cosine/projections.csv
+identifiers,{'COUNTYGEOID': 'str'}
+likelihood_lower,
+covariance_type,
+bic,
