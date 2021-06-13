@@ -10,4 +10,4 @@ original:
   url:
     data: 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/cancer/design/original.csv'
     attributes: 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/cancer/design/attributes.csv'
-  identifiers: { 'COUNTYGEOID': str }
+  identifiers: {'COUNTYGEOID': str }
