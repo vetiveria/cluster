@@ -9,7 +9,6 @@ import pandas as pd
 def main():
 
     # Prepare
-    directory = os.path.join(configurations.warehouse, group)
     directories.cleanup(directories_=[directory])
     directories.create(directories_=[directory])
 
@@ -38,7 +37,7 @@ def main():
 
     # Save, cluster.finale.prospects... details & either source = design or source = original
     print(details)
-    cluster.finale.prospects.Prospects(details=details, source=design, group=group)
+    cluster.finale.prospects.Prospects(details=details, source=design, group=group, directory=directory)
 
 
 if __name__ == '__main__':
@@ -76,11 +75,14 @@ if __name__ == '__main__':
     group, kernels, design, original = arguments.parameters(elements=args.elements)
 
     """
-    Instances
+    Configuration, Instances
     """
-    # Instances
+    # config
     configurations = config.Config()
-    interface = cluster.model.interface.Interface(group=group, kernels=kernels)
+    directory = os.path.join(configurations.warehouse, group)
+
+    # Instances
+    interface = cluster.model.interface.Interface(group=group, kernels=kernels, directory=directory)
     directories = cluster.src.directories.Directories()
 
     main()
