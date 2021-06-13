@@ -11,32 +11,32 @@ import cluster.src.directories
 
 class Prospects:
 
-    def __init__(self, details: pd.Series, source: collections.namedtuple, group: str, directory: str):
+    def __init__(self, details: pd.Series, source: collections.namedtuple, directory: str):
         """
         Constructor
         :param details:
         :param source:
-        :param group:
         :param directory:
         """
 
+        # Preliminaries
         self.details = details
         self.source = source
-        self.group = group
-
-        self.directories = cluster.src.directories.Directories()
-
-        # Configurations
         self.directory = directory
 
-        # Projections
+        # Datum
+        Datum = collections.namedtuple(typename='Datum',
+                                       field_names=['group', 'method', 'key', 'url', 'description', 'identifiers'])
+        self.datum = Datum._make((details.group, details.method, details.key, details.url, details.keydesc,
+                                  details.identifiers))
+
+        # Instances
         self.projections = cluster.src.projections.Projections()
-        self.projection = self.projections.exc(datum=self.details.datum)
-        self.labels = self.labels_(matrix=self.projection.tensor)
+        self.directories = cluster.src.directories.Directories()
 
-    def labels_(self, matrix):
+    def labels_(self, matrix) -> np.ndarray:
         """
-
+        Gets the label of each record/instance
         :param matrix: The labels of this matrix will be extracted/determined
         :return:
         """
@@ -48,27 +48,16 @@ class Prospects:
 
         return labels
 
-    def principals_(self):
+    def releases_(self, labels):
         """
-
-        :return: The principals w.r.t. a projection in space
-        """
-
-        principals: pd.DataFrame = self.projection.frame
-        principals.loc[:, 'label'] = self.labels
-
-        self.write(blob=principals, sections=['principals.csv'])
-
-    def releases_(self):
-        """
-
+        Saves the underlying releases data
         :return:
         """
 
         # Original
         underlying = cluster.src.underlying.Underlying(source=self.source).exc()
         original: pd.DataFrame = underlying.frame
-        original.loc[:, 'label'] = self.labels
+        original.loc[:, 'label'] = labels
 
         melted = original.melt(id_vars=['COUNTYGEOID', 'label'], var_name='tri_chem_id', value_name='quantity_kg')
         assert melted[['COUNTYGEOID', 'label']].drop_duplicates().shape[0] == \
@@ -85,7 +74,7 @@ class Prospects:
 
     def write(self, blob: pd.DataFrame, sections: list):
         """
-
+        Write
         :param blob: The DataFrame that will be written to disc
         :param sections: The name of the file, including its extension
         :return:
@@ -106,5 +95,13 @@ class Prospects:
         :return:
         """
 
-        self.principals_()
-        self.releases_()
+        projection: collections.namedtuple = self.projections.exc(datum=self.datum)
+        labels: np.ndarray = self.labels_(matrix=projection.tensor)
+
+        # Principals
+        principals: pd.DataFrame = projection.frame
+        principals.loc[:, 'label'] = labels
+        self.write(blob=principals, sections=['principals.csv'])
+
+        # Releases
+        self.releases_(labels=labels)
