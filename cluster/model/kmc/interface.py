@@ -36,8 +36,6 @@ class Interface:
 
         # Method store within a group directory
         self.store = os.path.join(self.directory, self.method)
-        if not os.path.exists(self.store):
-            os.makedirs(self.store)
 
     @staticmethod
     def datum_():
@@ -54,6 +52,9 @@ class Interface:
 
         :return:
         """
+
+        if not os.path.exists(self.store):
+            os.makedirs(self.store)
 
         excerpts = []
         for key_, arg in self.kernels.items():
@@ -81,7 +82,7 @@ class Interface:
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = datum.key
             vector.loc[:, 'method'] = datum.method
-            vector.loc[:, 'datum'] = datum
+            vector.loc[:, 'datum'] = dict(datum._asdict())
 
             # Append
             excerpts.append(vector)
