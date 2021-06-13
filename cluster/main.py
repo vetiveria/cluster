@@ -33,7 +33,7 @@ def main():
     # The best ...
     index = frame['score'].idxmax()
     details: pd.Series = frame.iloc[index, :]
-    details.rename('details')
+    details.rename('value', inplace=True)
 
     # Save, cluster.finale.prospects... details & either source = design or source = original
     print(details)

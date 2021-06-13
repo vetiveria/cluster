@@ -98,6 +98,9 @@ class Prospects:
         projection: collections.namedtuple = self.projections.exc(datum=self.datum)
         labels: np.ndarray = self.labels_(matrix=projection.tensor)
 
+        # The details of the best ...
+        self.details.to_csv(path_or_buf=os.path.join(self.directory, 'selected.csv'), index=True, encoding='UTF-8')
+
         # Principals
         principals: pd.DataFrame = projection.frame
         principals.loc[:, 'label'] = labels

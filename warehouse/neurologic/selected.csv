@@ -1,0 +1,22 @@
+,value
+calinski,12456.11186455453
+davies,0.34268497610784066
+silhouette_median,0.954803122033918
+silhouette_mean,0.7359970694075292
+calinski_inverse,8.028187373988096e-05
+density,5.750239060095161
+clusters,"{0: {'label': 0, 'median': 0.9314004877224586, 'mean': 0.8981208047263768, 'density': 0.8981208047263769, 'sum': 245.18697969030086, 'count': 273}, 1: {'label': 1, 'median': 0.9989358224752365, 'mean': 0.9972730290649282, 'density': 0.9972730290649314, 'sum': 854.6629859086435, 'count': 857}, 2: {'label': 2, 'median': 0.3453353223689971, 'mean': 0.19003933911714044, 'density': 0.19003933911714077, 'sum': 171.41548388366067, 'count': 902}, 3: {'label': 3, 'median': 0.9784644411433081, 'mean': 0.9466348858570792, 'density': 0.9466348858570803, 'sum': 458.17128475482633, 'count': 484}, 4: {'label': 4, 'median': 0.9550012797747527, 'mean': 0.9025242155033059, 'density': 0.9025242155033055, 'sum': 239.16891710837606, 'count': 265}, 5: {'label': 5, 'median': 0.9427511412444571, 'mean': 0.8742796146643556, 'density': 0.8742796146643546, 'sum': 190.59295599682952, 'count': 218}, 6: {'label': 6, 'median': 0.9773993395894326, 'mean': 0.9413671711619724, 'density': 0.9413671711619725, 'sum': 220.27991805190155, 'count': 234}}"
+r_clusters,7
+n_clusters,7
+inertia,73.95875163072984
+model,"KMeans(n_clusters=7, random_state=5)"
+score,5.40747380211358
+key,cosine
+keydesc,Cosine Kernel PCA
+method,kmc
+group,neurologic
+url,https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/neurologic/principals/kernel/cosine/projections.csv
+identifiers,{'COUNTYGEOID': 'str'}
+likelihood_lower,
+covariance_type,
+bic,
