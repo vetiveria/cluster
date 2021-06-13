@@ -1,0 +1,23 @@
+,value
+calinski,10207.530184857704
+davies,0.2695796571407158
+silhouette_median,0.5937513769633407
+silhouette_mean,0.5357535553356462
+calinski_inverse,9.796689129398252e-05
+density,5.105701031200823
+clusters,"{0: {'label': 0, 'median': 0.5937513769633402, 'mean': 0.2764223848271349, 'density': 0.27642238482713555, 'sum': 557.8203725811582, 'count': 2018}, 1: {'label': 1, 'median': 0.9950164201786681, 'mean': 0.9866822931312107, 'density': 0.9866822931312103, 'sum': 377.8993182692537, 'count': 383}, 2: {'label': 2, 'median': 0.9893842503052669, 'mean': 0.9722954722232973, 'density': 0.9722954722232984, 'sum': 184.7361397224265, 'count': 190}, 3: {'label': 3, 'median': 0.9821315699496913, 'mean': 0.9516556150037255, 'density': 0.9516556150037254, 'sum': 180.81456685070785, 'count': 190}, 4: {'label': 4, 'median': 0.9579876631062982, 'mean': 0.9348227808770623, 'density': 0.9348227808770609, 'sum': 264.5548469882086, 'count': 283}, 5: {'label': 5, 'median': 0.9925331337655015, 'mean': 0.9838224851383937, 'density': 0.983822485138393, 'sum': 166.26599998838853, 'count': 169}}"
+r_clusters,6
+n_clusters,6
+inertia,
+model,"BayesianGaussianMixture(covariance_type='tied', n_components=6, n_init=18,
+                        random_state=5)"
+score,4.836023407168813
+key,cosine
+keydesc,Cosine Kernel PCA
+method,bgmm
+group,respiratory
+url,https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/respiratory/principals/kernel/cosine/projections.csv
+identifiers,{'COUNTYGEOID': 'str'}
+likelihood_lower,25209.461026907236
+covariance_type,tied
+bic,
