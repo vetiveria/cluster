@@ -1,7 +1,7 @@
+import collections
 import logging
 import pandas as pd
 import os
-import config
 
 import cluster.src.projections
 
@@ -14,71 +14,90 @@ import cluster.model.bgmm.parameters
 
 class Interface:
 
-    def __init__(self):
+    def __init__(self, group: str, kernels: dict, directory: str):
+        """
+        Constructor
+        :param group: baseline?, cancer?, kidney?
+        :param kernels: The metadata details of the kernel projections that would undergo clustering
+        :param directory: The directory for the group's calculations
+        """
+
+        self.method = 'bgmm'
+        self.group = group
+        self.kernels = kernels
 
         # Configurations
-        configurations = config.Config()
-        self.warehouse = configurations.warehouse
-
-        # The keys of the projection matrices, and their descriptions
-        self.keys = configurations.keys
-        self.descriptions = configurations.descriptions_()
+        self.directory = directory
 
         # And, the data projections that will be modelled
         self.projections = cluster.src.projections.Projections()
         self.discriminator = cluster.functions.discriminator.Discriminator()
+        self.parameters = cluster.model.bgmm.parameters.Parameters().exc()
 
-        # Logging
-        logging.basicConfig(level=logging.INFO,
-                            format='%(message)s%(asctime)s.%(msecs)03d',
-                            datefmt='%Y-%m-%d %H:%M:%S')
-        self.logger = logging.getLogger(__name__)
+        # Method store within a group directory
+        self.store = os.path.join(self.directory, self.method)
 
-    def exc(self, method: str):
+    @staticmethod
+    def datum_():
+        """
 
-        store = os.path.join(self.warehouse, method)
-        if not os.path.exists(store):
-            os.makedirs(store)
+        :return:
+        """
 
-        parameters = cluster.model.bgmm.parameters.Parameters().exc()
+        return collections.namedtuple(typename='Datum',
+                                      field_names=['group', 'method', 'key', 'url', 'description', 'identifiers'])
+
+    def exc(self):
+        """
+
+        :return:
+        """
+
+        if not os.path.exists(self.store):
+            os.makedirs(self.store)
+
         excerpts = []
-        properties = []
-        for key in self.keys:
+        for key_, arg in self.kernels.items():
+
+            datum = self.datum_()._make((self.group, self.method, key_, arg['url'], arg['description'], arg['identifiers']))
 
             # In focus
-            self.logger.info('Bayesian GMM: Modelling the {} projections'.format(self.descriptions[key]))
+            logging.info('Bayesian GMM: Modelling the {} projections'.format(datum.description))
 
             # Projection
-            projection = self.projections.exc(key=key)
+            projection = self.projections.exc(datum=datum)
 
             # The determined models ...
             models: list = cluster.model.bgmm.algorithm.Algorithm(
-                matrix=projection.tensor, parameters=parameters).exc()
+                matrix=projection.tensor, parameters=self.parameters).exc()
             determinants: pd.DataFrame = cluster.model.bgmm.determinants.Determinants(
                 matrix=projection.tensor, models=models).exc()
 
-            # The best
+            # The best ... properties, index, estimate, discriminant
             best = self.discriminator.exc(determinants=determinants)
-            best.properties.to_csv(path_or_buf=os.path.join(store, key + '.csv'),
+            best.properties.to_csv(path_or_buf=os.path.join(self.store, datum.key + '.csv'),
                                    index=False, header=True, encoding='utf-8')
 
+            # ... the best w.r.t. a kernel/datum.key type
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
-            vector.loc[:, 'key'] = key
-            vector.loc[:, 'key_description'] = self.descriptions[key]
-            vector.loc[:, 'method'] = method
+            vector.loc[:, 'key'] = datum.key
+            vector.loc[:, 'keydesc'] = datum.description
+            vector.loc[:, 'method'] = datum.method
+            vector.loc[:, 'group'] = datum.group
+            vector.loc[:, 'url'] = datum.url
+            vector.loc[:, 'identifiers'] = datum.identifiers
 
             # Append
             excerpts.append(vector)
-            properties.append(best.properties)
 
-        # Concatenate
+        # Concatenate ... this will have a model per kernel/key type
         excerpt = pd.concat(excerpts, axis=0, ignore_index=True)
-        excerpt.to_csv(path_or_buf=os.path.join(self.warehouse, method + '.csv'),
+        excerpt.to_csv(path_or_buf=os.path.join(self.directory, self.method + '.csv'),
                        index=False, header=True, encoding='utf-8')
 
-        # Common steps
+        # Common steps ... this set of steps selects the best model from the best per kernel/key type
         index = excerpt['score'].idxmax()
         summary: pd.DataFrame = excerpt.iloc[index:(index + 1), :]
         summary.reset_index(drop=True, inplace=True)
 
-        return summary, properties[index]
+        return summary

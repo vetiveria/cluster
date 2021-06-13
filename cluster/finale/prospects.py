@@ -1,44 +1,42 @@
-import logging
+import collections
 import os
 
 import numpy as np
 import pandas as pd
 
-import cluster.src.design
+import cluster.src.underlying
 import cluster.src.projections
-import config
+import cluster.src.directories
 
 
 class Prospects:
 
-    def __init__(self, details: pd.Series, supplements: pd.DataFrame):
+    def __init__(self, details: pd.Series, source: collections.namedtuple, directory: str):
         """
-
+        Constructor
         :param details:
-        :param supplements:
+        :param source:
+        :param directory:
         """
 
-        # Configurations
-        configurations = config.Config()
-        self.warehouse = configurations.warehouse
-
-        # Logging
-        logging.basicConfig(level=logging.INFO, format='%(message)s\n%(asctime)s.%(msecs)03d',
-                            datefmt='%Y-%m-%d %H:%M:%S')
-        self.logger = logging.getLogger(__name__)
-
-        # Calculations
+        # Preliminaries
         self.details = details
-        self.supplements = supplements
+        self.source = source
+        self.directory = directory
 
-        # Design & Projections Matrices
+        # Datum
+        Datum = collections.namedtuple(typename='Datum',
+                                       field_names=['group', 'method', 'key', 'url', 'description', 'identifiers'])
+        self.datum = Datum._make((details.group, details.method, details.key, details.url, details.keydesc,
+                                  details.identifiers))
+
+        # Instances
         self.projections = cluster.src.projections.Projections()
-        self.projection = self.projections.exc(key=self.details.key)
-        self.labels = self.labels_(matrix=self.projection.tensor)
+        self.directories = cluster.src.directories.Directories()
 
-    def labels_(self, matrix):
+    def labels_(self, matrix) -> np.ndarray:
         """
-
+        Gets the label of each record/instance
         :param matrix: The labels of this matrix will be extracted/determined
         :return:
         """
@@ -50,35 +48,16 @@ class Prospects:
 
         return labels
 
-    def supplements_(self):
+    def releases_(self, labels):
         """
-
-        :return:
-        """
-
-        self.write(blob=self.supplements, sections=['supplements.csv'])
-
-    def principals_(self):
-        """
-
-        :return: The principals w.r.t. a projection in space
-        """
-
-        principals: pd.DataFrame = self.projection.frame
-        principals.loc[:, 'label'] = self.labels
-
-        self.write(blob=principals, sections=['principals.csv'])
-
-    def releases_(self):
-        """
-
+        Saves the underlying releases data
         :return:
         """
 
         # Original
-        design = cluster.src.design.Design().exc()
-        original: pd.DataFrame = design.frame
-        original.loc[:, 'label'] = self.labels
+        underlying = cluster.src.underlying.Underlying(source=self.source).exc()
+        original: pd.DataFrame = underlying.frame
+        original.loc[:, 'label'] = labels
 
         melted = original.melt(id_vars=['COUNTYGEOID', 'label'], var_name='tri_chem_id', value_name='quantity_kg')
         assert melted[['COUNTYGEOID', 'label']].drop_duplicates().shape[0] == \
@@ -95,13 +74,17 @@ class Prospects:
 
     def write(self, blob: pd.DataFrame, sections: list):
         """
-
+        Write
         :param blob: The DataFrame that will be written to disc
         :param sections: The name of the file, including its extension
         :return:
         """
 
-        blob.to_csv(path_or_buf=os.path.join(self.warehouse, *sections), index=False, header=True,
+        filestring = os.path.join(self.directory, *sections)
+        path = os.path.split(filestring)[0]
+        self.directories.create(directories_=[path])
+
+        blob.to_csv(path_or_buf=filestring, index=False, header=True,
                     encoding='UTF-8')
 
     def exc(self):
@@ -112,6 +95,13 @@ class Prospects:
         :return:
         """
 
-        self.principals_()
-        self.releases_()
-        self.supplements_()
+        projection: collections.namedtuple = self.projections.exc(datum=self.datum)
+        labels: np.ndarray = self.labels_(matrix=projection.tensor)
+
+        # Principals
+        principals: pd.DataFrame = projection.frame
+        principals.loc[:, 'label'] = labels
+        self.write(blob=principals, sections=['principals.csv'])
+
+        # Releases
+        self.releases_(labels=labels)

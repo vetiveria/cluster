@@ -4,6 +4,7 @@ import numpy as np
 import sklearn.metrics
 
 
+# noinspection PyUnresolvedReferences
 class Densities:
 
     def __init__(self, matrix: np.ndarray, method: str = None):
