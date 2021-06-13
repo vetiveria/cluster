@@ -1,0 +1,22 @@
+,value
+calinski,5879.097113666184
+davies,0.3104736628499228
+silhouette_median,0.9254886576049866
+silhouette_mean,0.8635086383345452
+calinski_inverse,0.0001700941455237169
+density,5.390126405925054
+clusters,"{0: {'label': 0, 'median': 0.9740326404147379, 'mean': 0.9316255534455523, 'density': 0.9316255534455522, 'sum': 162.1028462995261, 'count': 174}, 1: {'label': 1, 'median': 0.9684179937830864, 'mean': 0.9087488231843225, 'density': 0.9087488231843215, 'sum': 368.0432733896506, 'count': 405}, 2: {'label': 2, 'median': 0.9819749820299217, 'mean': 0.9504340842639539, 'density': 0.9504340842639543, 'sum': 306.99020921725713, 'count': 323}, 3: {'label': 3, 'median': 0.9254886576049864, 'mean': 0.8278528402008586, 'density': 0.8278528402008523, 'sum': 1574.576102062033, 'count': 1902}, 4: {'label': 4, 'median': 0.9577403274916633, 'mean': 0.8840624586775435, 'density': 0.8840624586775436, 'sum': 181.23280402889642, 'count': 205}, 5: {'label': 5, 'median': 0.9608334626131714, 'mean': 0.8874026461528305, 'density': 0.8874026461528308, 'sum': 198.77819273823403, 'count': 224}}"
+r_clusters,6
+n_clusters,6
+inertia,113.71209014719342
+model,"KMeans(n_clusters=6, random_state=5)"
+score,5.079482648929607
+key,cosine
+keydesc,Cosine Kernel PCA
+method,kmc
+group,cancer
+url,https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/cancer/principals/kernel/cosine/projections.csv
+identifiers,{'COUNTYGEOID': 'str'}
+likelihood_lower,
+covariance_type,
+bic,
