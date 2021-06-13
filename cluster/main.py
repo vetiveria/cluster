@@ -37,7 +37,7 @@ def main():
 
     # Save, cluster.finale.prospects... details & either source = design or source = original
     print(details)
-    cluster.finale.prospects.Prospects(details=details, source=design, group=group, directory=directory)
+    cluster.finale.prospects.Prospects(details=details, source=design, directory=directory).exc()
 
 
 if __name__ == '__main__':
