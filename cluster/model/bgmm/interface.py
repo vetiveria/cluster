@@ -81,7 +81,7 @@ class Interface:
             vector = best.properties.copy().iloc[best.index:(best.index + 1), :]
             vector.loc[:, 'key'] = datum.key
             vector.loc[:, 'method'] = datum.method
-            vector.loc[:, 'datum'] = datum
+            vector.loc[:, 'datum'] = dict(datum._asdict())
 
             # Append
             excerpts.append(vector)
