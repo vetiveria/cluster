@@ -13,7 +13,7 @@ class Parameters:
 
     def exc(self):
         return self.ParametersCollection(
-            array_n_clusters=np.array([5, 6]),
+            array_n_clusters=np.array([5, 6, 7]),
             array_eigen_solver=np.array(['arpack', 'lobpcg']),
             array_n_init=np.array([15]),
             array_gamma=np.array([1.0, 1.1, 1.2, 1.3]),
