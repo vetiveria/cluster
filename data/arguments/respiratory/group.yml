@@ -1,0 +1,13 @@
+group: 'respiratory'
+kernels: {'rbf': {'url': 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/respiratory/principals/kernel/rbf/projections.csv', 'description': 'Radial Basis Function Kernel PCA', 'identifiers': {'COUNTYGEOID': str}},
+          'cosine': {'url': 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/respiratory/principals/kernel/cosine/projections.csv', 'description': 'Cosine Kernel PCA', 'identifiers': {'COUNTYGEOID': str}}}
+design:
+  url:
+    data: 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/respiratory/design/design.csv'
+    attributes: 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/respiratory/design/attributes.csv'
+  identifiers: {'COUNTYGEOID': str}
+original:
+  url:
+    data: 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/respiratory/design/original.csv'
+    attributes: 'https://raw.githubusercontent.com/vetiveria/segments/master/warehouse/respiratory/design/attributes.csv'
+  identifiers: {'COUNTYGEOID': str }
