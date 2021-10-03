@@ -10,7 +10,7 @@ packages()
 
 
 # Data
-principals <- fread(file = "../../warehouse/principals.csv", header = TRUE, encoding = "UTF-8", data.table = TRUE, 
+principals <- fread(file = "../../warehouse/baseline/principals.csv", header = TRUE, encoding = "UTF-8", data.table = TRUE, 
                     colClasses = c("character", "numeric", "numeric", "numeric", "numeric", "factor"))
 trainingdata <- data.matrix(principals[, !c("COUNTYGEOID", "label")], rownames.force = NA)
 gazetteer <- gazetteer()
@@ -28,6 +28,13 @@ colours <- c('#000000', '#BF382A', '#0C4B8E', '#808000', '#993300', '#ff9900')
 variables <- as.list(c(8, 200, Sys.time()))
 names(variables) <- c("initial_dims", "epoch", "start")
 
+
+# Directory
+pathstr <- file.path(getwd(), 'data')
+if (dir.exists(paths = pathstr)) {
+  base::unlink(pathstr, recursive = TRUE)
+}
+dir.create(path = pathstr, showWarnings = TRUE, recursive = TRUE)
 
 
 # Structuring
@@ -57,8 +64,8 @@ epoch_callback <- function(x){
 
 
 # tSNE Algorithm
-estimates <- tsne(distances, initial_config = NULL, k = 3, initial_dims = variables$initial_dims, max_iter = 1600,
-     epoch_callback = epoch_callback, epoch = variables$epoch)
+estimates <- tsne(distances, initial_config = NULL, k = 3, initial_dims = variables$initial_dims, max_iter = 800,
+     epoch_callback = NULL, epoch = variables$epoch)
 tSNE3DGraph(data = structure(matrix = estimates), fileName = "estimates", colours = colours)
 
 
