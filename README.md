@@ -22,6 +22,9 @@ and
   
   # Version 1.3.post1 ... odd
   pip install yellowbrick 
+  
+  # Plotly
+  pip install plotly==5.2.1
 ```
 
 Note

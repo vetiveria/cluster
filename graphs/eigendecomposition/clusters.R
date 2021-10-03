@@ -12,7 +12,7 @@ isready <- lapply(packages, prepare)
 
 
 # Data
-principals <- fread(file = "../../warehouse/principals.csv", header = TRUE, encoding = "UTF-8", data.table = TRUE, 
+principals <- fread(file = "../warehouse/baseline/principals.csv", header = TRUE, encoding = "UTF-8", data.table = TRUE, 
                     colClasses = c("character", "numeric", "numeric", "numeric", "numeric", "factor"))
 
 accumulations <- fread("https://raw.githubusercontent.com/briefings/sars/master/fundamentals/hopkins/warehouse/accumulations.csv", 
@@ -38,7 +38,7 @@ missing <- principals[!readings, on = "COUNTYGEOID"]
 
 
 
-# Draw
+# Draw [file.path(getwd(), , )]
 fig <- plot_ly(readings, x = ~C02, y = ~C03, z = ~C04, color = ~label, 
                colors = c('#000000', '#BF382A', '#0C4B8E', '#808000', '#993300', '#ff9900'), 
                text = ~paste(COUNTY, ', ', STATE))
@@ -46,7 +46,7 @@ fig <- fig %>% add_markers()
 fig <- fig %>% layout(scene = list(xaxis = list(title = 'PC 2'), 
                                    yaxis = list(title = 'PC 3'),
                                    zaxis = list(title = 'PC 4')))
-htmlwidgets::saveWidget(fig, "clusters.html")
+htmlwidgets::saveWidget(fig, 'clusters.html')
 
 
 
@@ -58,5 +58,5 @@ fig <- fig %>% add_markers()
 fig <- fig %>% layout(scene = list(xaxis = list(title = 'PC 2'), 
                                    yaxis = list(title = 'PC 3'),
                                    zaxis = list(title = 'PC 4')))
-htmlwidgets::saveWidget(fig, "contexts.html")
+htmlwidgets::saveWidget(fig, 'contexts.html')
 
