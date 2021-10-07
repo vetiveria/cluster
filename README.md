@@ -17,8 +17,11 @@ and
   conda install -c anaconda scikit-learn
   conda install -c anaconda matplotlib seaborn
   conda install -c anaconda pytest coverage pytest-cov pylint
-  conda install -c anaconda pywin32 jupyterlab nodejs
+  conda install -c anaconda jupyterlab nodejs
   conda install -c anaconda python-graphviz
+  
+  # pywin32
+  pip install pywin32==301
   
   # Version 1.3.post1 ... odd
   pip install yellowbrick 
